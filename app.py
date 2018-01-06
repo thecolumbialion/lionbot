@@ -324,9 +324,5 @@ def callback_clicked_button(payload, event):
     page.send(recipient_id, health_resources(payload))
     return "health/welness callback done"
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('login.html'), 404
-
 if __name__ == "__main__":
     app.run()
