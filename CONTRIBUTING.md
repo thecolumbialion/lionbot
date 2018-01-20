@@ -84,7 +84,7 @@ In order to run the bot locally, you need to add the environment variables. To k
 If you do not have access to the file, contact a member of the team or email operations@columbialion.com or labs@adicu.com. Once you have the file, just copy and paste its contents into Terminal to have all the environment variables be added.
 
 The file should look like the following if you are working on a non-Columbia version of the bot:
-` export ACCESS_TOKEN=FACEBOOK_ACCESS_TOKEN
+``` export ACCESS_TOKEN=FACEBOOK_ACCESS_TOKEN
 export CLIENT_ACCESS_TOKEN=FACEBOOK_CLIENT_ACCESS_TOKEN
 export DATABASE_URL=postgres://postgres:TABLEURLHERE
 export DEVELOPER_ACCESS_TOKEN=DIAGLOG_FLOW_TOKEN
@@ -93,7 +93,7 @@ export TZ=America/New_York
 export VERIFY_TOKEN=FB_VERIFY_TOKEN
 export YELP_API_KEY=YELP_API_KEY
 export WEATHER_API_KEY=OPEN_WEATHER_MAP_KEY
-`
+```
 
 ### 4) Confirm your version is working locally
 If you have everything setup correctly, make sure your terminal's current working directory is the bot's folder and run 
