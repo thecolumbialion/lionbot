@@ -103,13 +103,18 @@ You should get a message with a similar output to the following:
 
 ` * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)`
 
+The bot by default will accept messages at the `/webhook` endpoint. Note, you will see a message that says "Failed validation. Make sure the validation tokens match." As per Facebook Messenger API rules, you need to use a verification code 
+
 ### 5) Install Ngrok
-To help speed up the development process, we use Ngrok. This nifty tools allows you to launch our Flask app and make it publicly available via a free https:// generated website link. If you do not have Ngrok installed, visit this [gist](https://gist.github.com/wosephjeber/aa174fb851dfe87e644e) for installation instructions.
+To help speed up the development process, we use Ngrok. This nifty tool allows you to launch our Flask app and make it publicly available via a free https:// generated website link. If you do not have Ngrok installed, visit this [gist](https://gist.github.com/wosephjeber/aa174fb851dfe87e644e) for installation instructions.
 
 ### 6) Get Bot code running on Ngrok
 To get the bot running with it's own Ngrok website link, you need to have two terminal tabs/windows open. In the first tab or window, follow the steps listed in step 4. In the other tab or window, run the following command `ngrok http [port]` where [port] is replaced with the last four numbers in the link generated in the first tab where you ran the Flask app (In the example here, that would be 5000). 
+
 If done correctly, you will see a screen like this in the second tab or window:
 ![Image of Ngrok in use](https://cdn.pbrd.co/images/GR3ufdA.png)
+
+If the above does not work or you have Homebrew installed, just type `brew cask install ngrok`
 
 Now, we're almost done getting our bot to be tested locally.
 
