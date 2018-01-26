@@ -69,8 +69,11 @@ To run the bot locally, you need to do the following:
 First type the following in Terminal: 
 `python3 -m venv <filepath to your LionBot repo>`
 
+Next, `cd` into the `bin` folder,
+` cd bin `
+
 Next, activate the virtual environment: 
-`source <desired-path>/bin/activate`
+`source activate`
 
 To deactivate the environment, simply write: 
 `deactivate `
