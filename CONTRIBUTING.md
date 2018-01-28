@@ -119,8 +119,15 @@ Now, we're almost done getting our bot to be tested locally.
 ### 7) Getting Ready for testing the Bot 
 Now we're at the good part -- actually getting to message the bot to see if it works. For our needs, we need two sections -- the Facebook for Developers [portal](https://developers.facebook.com/) and a Facebook [page](https://www.messenger.com/t/lionbottesting) to use for testing.
 
+
 ### 8) Updating the webhook
-Login to Facebook Developers and go to the Test Bot page (in our example, a private page called 'The Lion Bot'). If you have not been added as a developer on the bot, this will fail -- make sure to be added as a developer to access it or make your own. Go to the webhooks section, and click 'Edit Subscriptions' In the box that loads, for the Callback URL enter the link created by Ngrok (make sure this is the link that starts with **https://** ) + "/webhook" (ex. "https://https://5fhan.ngrok.io/webhook), the endpoint at which our bot accepts messages. For the Verify Token field, enter the VERIFY_TOKEN key that you set as an environment variable from lionbot_localtesting_variables.txt If done correctly, the screen should close and accept the changes.
+Login to Facebook Developers and go to the Test Bot page (in our example, a private page called 'The Lion Bot'). If you have not been added as a developer on the bot, this will fail -- make sure to be added as a developer to access it or make your own. 
+
+To _accept_ the invitation to be a developer, click on the right upperhand corner, as shown below:
+
+[![Screen_Shot_2018-01-26_at_4.47.35_PM.png](https://s18.postimg.org/el3whqed5/Screen_Shot_2018-01-26_at_4.47.35_PM.png)](https://postimg.org/image/62ugde7ud/)
+
+Go to the webhooks section, and click 'Edit Subscriptions' In the box that loads, for the Callback URL enter the link created by Ngrok (make sure this is the link that starts with **https://** ) + "/webhook" (ex. "https://https://5fhan.ngrok.io/webhook), the endpoint at which our bot accepts messages. For the Verify Token field, enter the VERIFY_TOKEN key that you set as an environment variable from lionbot_localtesting_variables.txt If done correctly, the screen should close and accept the changes.
 
 ### 9) Test your bot
 You can now message the testing [bot.](https:///m.me/lionbottesting) You should be able to get responses from the bot and view any error messages from your terminal tab or window where the Flask app is running.
