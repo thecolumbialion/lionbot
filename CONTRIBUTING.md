@@ -87,7 +87,8 @@ In order to run the bot locally, you need to add the environment variables. To k
 If you do not have access to the file, contact a member of the team or email operations@columbialion.com or labs@adicu.com. Once you have the file, just copy and paste its contents into Terminal to have all the environment variables be added.
 
 The file should look like the following if you are working on a non-Columbia version of the bot:
-``` export ACCESS_TOKEN=FACEBOOK_ACCESS_TOKEN
+``` 
+export ACCESS_TOKEN=FACEBOOK_ACCESS_TOKEN
 export CLIENT_ACCESS_TOKEN=FACEBOOK_CLIENT_ACCESS_TOKEN
 export DATABASE_URL=postgres://postgres:TABLEURLHERE
 export DEVELOPER_ACCESS_TOKEN=DIAGLOG_FLOW_TOKEN
@@ -102,6 +103,7 @@ export WEATHER_API_KEY=OPEN_WEATHER_MAP_KEY
 If you have everything setup correctly, make sure your terminal's current working directory is the bot's folder and run 
 
 `python3 app.py`
+
 You should get a message with a similar output to the following:
 
 ` * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)`
@@ -122,7 +124,8 @@ If the above does not work or you have Homebrew installed, just type `brew cask 
 Now, we're almost done getting our bot to be tested locally.
 
 ### 7) Getting Ready for testing the Bot 
-Now we're at the good part -- actually getting to message the bot to see if it works. For our needs, we need two sections -- the Facebook for Developers [portal](https://developers.facebook.com/) and a Facebook [page](https://www.messenger.com/t/lionbottesting) to use for testing.
+
+Now we're at the good part -- actually getting to message the bot to see if it works. For our needs, we need two sections -- the Facebook for Developers [portal](https://developers.facebook.com/) and a Facebook [page](https://www.messenger.com/t/lionbottesting) to use for testing. Make sure that developers are added as **admins**. 
 
 
 ### 8) Updating the webhook
