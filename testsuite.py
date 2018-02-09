@@ -21,8 +21,8 @@ class diningTest(ut.TestCase):
 		   Test getDiningEvents() function: 
 		   currently there's no dining events on the dining website, so result is an empty list
 		"""
-		ut.TestCase.assertEqual(self, getDiningEvents(), [], msg="there's no dining event")
-		ut.TestCase.assertNotEqual(self, getDiningEvents(), [], msg="there's no dining event")
+		ut.TestCase.assertNotEqual(self, getDiningEvents(), [], msg="there are dining events the the result is not an empty list")
+		#ut.TestCase.assertEqual(self, getDiningEvents(), [], msg="there are dining events the the result is not an empty list")
 
 def suite():
 	suite = ut.TestSuite()
