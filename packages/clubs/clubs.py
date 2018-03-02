@@ -10,19 +10,36 @@ def clubs_msg(result):
 	return find_clubs(club)
 
 def make_club_dict():
+	"""
+	Store both club name and its acronym as key, and the club info as value into the file club_dict
+
+	"""
 	club_dict = {}
 	club_file = open('./packages/clubs/clubs.csv')
 	for club in club_file:
 		club_info = club.split("\t")
 		if len(club_info) < 2: 
 			continue
-		club_dict[club_info[0].strip()] = club_info[1].strip()
+		clubname = club_info[0].strip()
+		acronym = "".join(word[0] for word in clubname.split())
+		club_dict[clubname] = club_info[1].strip()
+		club_dict[acronym] = club_info[1].strip()
 	club_file.close()
 	output_file = open("./club_dict", "wb")
 	pickle.dump(club_dict, output_file)
 	output_file.close()
 
 def find_clubs(club):
+	"""
+	Input: a string from users
+	Output: a list of strings, one of which should be what the user is looking for 
+	
+	If the list is empty: no result is found.
+	If the list has multiple entries: any one of them might be the club the user is looking for. In that case, the bot 
+	should handle the logic to check with the users which club is the one they want. 
+
+	"""
+
 	club = club.lower()
 	input_file = open("./club_dict", "rb")
 	clubs_dict = pickle.load(input_file)
