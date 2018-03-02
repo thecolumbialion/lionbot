@@ -69,8 +69,11 @@ To run the bot locally, you need to do the following:
 First type the following in Terminal: 
 `python3 -m venv <filepath to your LionBot repo>`
 
+Next, `cd` into the `bin` folder,
+` cd bin `
+
 Next, activate the virtual environment: 
-`source <desired-path>/bin/activate`
+`source activate`
 
 To deactivate the environment, simply write: 
 `deactivate `
@@ -84,7 +87,8 @@ In order to run the bot locally, you need to add the environment variables. To k
 If you do not have access to the file, contact a member of the team or email operations@columbialion.com or labs@adicu.com. Once you have the file, just copy and paste its contents into Terminal to have all the environment variables be added.
 
 The file should look like the following if you are working on a non-Columbia version of the bot:
-``` export ACCESS_TOKEN=FACEBOOK_ACCESS_TOKEN
+``` 
+export ACCESS_TOKEN=FACEBOOK_ACCESS_TOKEN
 export CLIENT_ACCESS_TOKEN=FACEBOOK_CLIENT_ACCESS_TOKEN
 export DATABASE_URL=postgres://postgres:TABLEURLHERE
 export DEVELOPER_ACCESS_TOKEN=DIAGLOG_FLOW_TOKEN
@@ -99,6 +103,7 @@ export WEATHER_API_KEY=OPEN_WEATHER_MAP_KEY
 If you have everything setup correctly, make sure your terminal's current working directory is the bot's folder and run 
 
 `python3 app.py`
+
 You should get a message with a similar output to the following:
 
 ` * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)`
@@ -119,10 +124,18 @@ If the above does not work or you have Homebrew installed, just type `brew cask 
 Now, we're almost done getting our bot to be tested locally.
 
 ### 7) Getting Ready for testing the Bot 
-Now we're at the good part -- actually getting to message the bot to see if it works. For our needs, we need two sections -- the Facebook for Developers [portal](https://developers.facebook.com/) and a Facebook [page](https://www.messenger.com/t/lionbottesting) to use for testing.
+
+Now we're at the good part -- actually getting to message the bot to see if it works. For our needs, we need two sections -- the Facebook for Developers [portal](https://developers.facebook.com/) and a Facebook [page](https://www.messenger.com/t/lionbottesting) to use for testing. Make sure that developers are added as **admins**. 
+
 
 ### 8) Updating the webhook
-Login to Facebook Developers and go to the Test Bot page (in our example, a private page called 'The Lion Bot'). If you have not been added as a developer on the bot, this will fail -- make sure to be added as a developer to access it or make your own. Go to the webhooks section, and click 'Edit Subscriptions' In the box that loads, for the Callback URL enter the link created by Ngrok (make sure this is the link that starts with **https://** ) + "/webhook" (ex. "https://https://5fhan.ngrok.io/webhook), the endpoint at which our bot accepts messages. For the Verify Token field, enter the VERIFY_TOKEN key that you set as an environment variable from lionbot_localtesting_variables.txt If done correctly, the screen should close and accept the changes.
+Login to Facebook Developers and go to the Test Bot page (in our example, a private page called 'The Lion Bot'). If you have not been added as a developer on the bot, this will fail -- make sure to be added as a developer to access it or make your own. 
+
+To _accept_ the invitation to be a developer, click on the right upperhand corner, as shown below:
+
+[![Screen_Shot_2018-01-26_at_4.47.35_PM.png](https://s18.postimg.org/el3whqed5/Screen_Shot_2018-01-26_at_4.47.35_PM.png)](https://postimg.org/image/62ugde7ud/)
+
+Go to the webhooks section, and click 'Edit Subscriptions' In the box that loads, for the Callback URL enter the link created by Ngrok (make sure this is the link that starts with **https://** ) + "/webhook" (ex. "https://https://5fhan.ngrok.io/webhook), the endpoint at which our bot accepts messages. For the Verify Token field, enter the VERIFY_TOKEN key that you set as an environment variable from lionbot_localtesting_variables.txt If done correctly, the screen should close and accept the changes.
 
 ### 9) Test your bot
 You can now message the testing [bot.](https:///m.me/lionbottesting) You should be able to get responses from the bot and view any error messages from your terminal tab or window where the Flask app is running.
