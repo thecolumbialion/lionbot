@@ -1,4 +1,4 @@
-#flask libraries 
+#flask libraries
 from flask import Flask, request, redirect, render_template, request, abort, Response, flash, send_file
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 from flask import session as sess

@@ -14,7 +14,7 @@ def find_open():
 	#print((lst_mid))
 	for x in lst_mid:
 		element = x.find("a")
-		#print(element.text)
+		print(element.text) # MOMO CHANGED THIS prints name
 		closing = ""
 		ele = x.findAll("span", class_="closes-at pull-right")
 		#print(ele)
