@@ -4,29 +4,17 @@ from fbmq import Template, QuickReply, ButtonPostBack
 import requests
 import json
 
-#take resturant name and return hours for restaurant
 def offcampus_dining_hours_msg(result):
-	'''Interface Function'''
-	#term = result['parameters']['off_campus_food_hours']
-	print(result)
-	print(result['parameters']['off_campus_restaurant'])
+	'''Interface Function'''	
 	try: 
 		term = result['parameters']['off_campus_restaurant']
 
 	except: 
-		term = 'junzi'
-		#return 'error getting data for that location'
+		return 'Sorry, couldn\'t find that restaurant. Try another?'
 	hours = get_hours(term)
-	#hours_result = [term, hours]
 	hours_result = term + '\'s ' + hours 
-	#hours_result needs to be an array 
-	#print(hours_result)
-	#print(type(hours_result))
-	#response = Template.List(elements=hours_result, top_element_style='large')
 	response = hours_result
-	#print(type(response))
 	return response
-	#return hours_result 
 
 def get_hours(term):
 	#set latittude and longitude to CU 
@@ -100,12 +88,5 @@ def parse_time(time_string):
 	#fix midnight  
 	if int(hour) == 0: 
 		hour = 12
-
 	parsed_time = str(hour) + ":" + time_string[2:4] + " " + time_modifier
 	return parsed_time
-
-def main():
-	result = offcampus_dining_hours_msg("sweetgreen")
-	print(result)
-
-#main()
