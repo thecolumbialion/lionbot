@@ -5,18 +5,26 @@ import requests
 import json
 
 #take resturant name and return hours for restaurant
-def offcampus_dining_hours_msg(term):
+def offcampus_dining_hours_msg(result):
 	'''Interface Function'''
+	#term = result['parameters']['off_campus_food_hours']
+	print(result)
+	print(result['parameters']['off_campus_restaurant'])
 	try: 
-		term = result['parameters']['off_campus_food_hours']
+		term = result['parameters']['off_campus_restaurant']
+
 	except: 
 		term = 'junzi'
+		#return 'error getting data for that location'
 	hours = get_hours(term)
+	#hours_result = [term, hours]
 	hours_result = term + '\'s ' + hours 
-	print(hours_result)
-	print(type(hours_result))
-	response = Template.List(elements=hours_result, top_element_style='large')
-	print(type(response))
+	#hours_result needs to be an array 
+	#print(hours_result)
+	#print(type(hours_result))
+	#response = Template.List(elements=hours_result, top_element_style='large')
+	response = hours_result
+	#print(type(response))
 	return response
 	#return hours_result 
 
@@ -100,4 +108,4 @@ def main():
 	result = offcampus_dining_hours_msg("sweetgreen")
 	print(result)
 
-main()
+#main()
