@@ -39,6 +39,7 @@ from packages.housing.laundry import open_machines_msg
 from packages.offcampus.broadway import broadway_rush_msg 
 from packages.offcampus.food_recommendations import offcampus_dining_request_msg, get_yelp_info
 from packages.offcampus.mta import mta_subway_info_msg
+from packages.offcampus.food_hours import offcampus_dining_hours_msg
 
 #clubs
 from packages.clubs.news import news_msg
@@ -80,6 +81,7 @@ Msg_Fn_Dict = {
         'dining_events' : dining_events_msg,
         'dininghallisOpen' : dininghallisOpen_msg,
         'offcampus_dining_request' : offcampus_dining_request_msg,
+        'offcampus_dining_hours' : offcampus_dining_hours_msg,
         'broadway_rush' : broadway_rush_msg,
         'calendar' : calendar_msg,
         'dining_hall_menu' : dining_hall_menu_msg,
@@ -259,9 +261,12 @@ def message_handler(event):
 
     if intent in Msg_Fn_Dict:
         msg = get_generic_or_msg(intent,result)
+        print(type(msg))
         if type(msg) is list:
+            #print('sending as list')
             print(page.send(recipient_id, msg))
         if type(msg) is str:
+            #print('sending as str')
             try:
                 chunks = chunkify(msg)
                 for chunk in chunks:
@@ -269,6 +274,8 @@ def message_handler(event):
             except:
                 return ""
         else:
+            #print('sending as other')
+            #print(msg)
             print(page.send(recipient_id, msg))
 
     elif "smalltalk" in result['action']:
