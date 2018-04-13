@@ -143,17 +143,12 @@ def validate():
     else:
         return "Failed validation. Make sure the validation tokens match."
 
-def show_persistent_menu():
-    page.show_persistent_menu([Template.ButtonPostBack('Current Features', 'MENU_PAYLOAD/GET_STARTED'),
-                               Template.ButtonPostBack('Health and Wellness', 'MENU_PAYLOAD/health')])
-    return "Done with persistent menu section"
 
-#for future deployment with subscriptions feature
-"""def show_persistent_menu():
+def show_persistent_menu():
     page.show_persistent_menu([Template.ButtonPostBack('Subscriptions', 'MENU_PAYLOAD/subscriptions'),
                                Template.ButtonPostBack('Current Features', 'MENU_PAYLOAD/GET_STARTED'),
                                Template.ButtonPostBack('Health and Wellness', 'MENU_PAYLOAD/health')])
-    return "Done with persistent menu section"""
+    return "Done with persistent menu section"
 
 @page.callback(['MENU_PAYLOAD/(.+)'])
 def click_persistent_menu(payload, event):
@@ -182,6 +177,23 @@ def handle_subscriptons(payload, event):
     recipient_id = event.sender_id
     print(page.send(recipient_id, "You are now subscribed to " + click_menu))
     page.typing_off(recipient_id)
+
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    cur = conn.cursor()
+    try:
+        subscription_query = "UPDATE subscription SET messenger_id_list = array_append(messenger_id_list, '%s')" % (recipient_id)
+        print(subscription_query)
+        cur.execute(subscription_query)
+        conn.commit()
+    except:
+        print("ERROR: Updating database (subscription) failed.")
+
     return "Done with handling subscription request"
 
 @app.route('/webhook', methods=['POST'])
@@ -211,6 +223,7 @@ def received_postback(event):
     elif payload == 'health':
         return "health done"
     elif payload == 'subscriptions':
+        
         return "subscriptions done"
     else:
         return "ERROR: Menu not found"

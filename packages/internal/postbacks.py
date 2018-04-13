@@ -80,14 +80,13 @@ bot_menu = [Template.ButtonPostBack('Current Features', 'MENU_PAYLOAD/GET_STARTE
 Template.ButtonPostBack('Health and Wellness', 'MENU_PAYLOAD/health')]
 
 subscriptions_welcome = "Welcome to Subscriptions. A new feature that allows you to get direct updates from campus clubs."
-subscriptions_reply = [ QuickReply(title="News", payload="Subscriptions/news"),
-QuickReply(title="Technology", payload="Subscriptions/technology"),
-QuickReply(title="Politics", payload="Subscriptions/politics"),
-QuickReply(title="Academic", payload="Subscriptions/academic"),
-QuickReply(title="Gender and Sexuality", payload="Subscriptions/gender"),
-QuickReply(title="Pre-Professional", payload="Subscriptions/pre-professional"),
-QuickReply(title="Music", payload="Subscriptions/music"),
-QuickReply(title="Dance", payload="Subscriptions/dance"),
+subscriptions_reply = [ QuickReply(title="Media & Publications", payload="Subscriptions/mediapublications"),
+QuickReply(title="Technology & Engineering", payload="Subscriptions/technology&engineering"),
+QuickReply(title="Political", payload="Subscriptions/political"),
+QuickReply(title="Environmental", payload="Subscriptions/environmental"),
+QuickReply(title="Medicine", payload="Subscriptions/medicine"),
+QuickReply(title="Music & Dance", payload="Subscriptions/music&dance"),
+QuickReply(title="Science", payload="Subscriptions/science"),
 QuickReply(title="Service", payload="Subscriptions/service")]
 
 def current_features_msg(result):
