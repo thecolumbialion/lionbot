@@ -80,7 +80,7 @@ bot_menu = [Template.ButtonPostBack('Current Features', 'MENU_PAYLOAD/GET_STARTE
 Template.ButtonPostBack('Health and Wellness', 'MENU_PAYLOAD/health')]
 
 subscriptions_welcome = "Welcome to Subscriptions. A new feature that allows you to get direct updates from campus clubs."
-subscriptions_reply = [ QuickReply(title="Media & Publications", payload="Subscriptions/mediapublications"),
+subscriptions_reply = [ QuickReply(title="Media & Publications", payload="Subscriptions/media&publications"),
 QuickReply(title="Technology & Engineering", payload="Subscriptions/technology&engineering"),
 QuickReply(title="Political", payload="Subscriptions/political"),
 QuickReply(title="Environmental", payload="Subscriptions/environmental"),

@@ -187,7 +187,7 @@ def handle_subscriptons(payload, event):
     )
     cur = conn.cursor()
     try:
-        subscription_query = "UPDATE subscription SET messenger_id_list = array_append(messenger_id_list, '%s')" % (recipient_id)
+        subscription_query = "UPDATE subscription SET messenger_id_list = array_append(messenger_id_list, '%s') WHERE category = '%s'" % (recipient_id, click_menu)
         print(subscription_query)
         cur.execute(subscription_query)
         conn.commit()
