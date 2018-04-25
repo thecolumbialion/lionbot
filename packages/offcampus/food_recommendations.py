@@ -12,7 +12,6 @@ def offcampus_dining_request_msg(result, latitude=40.806209, longitude=-73.96173
 			term = "boba"
 		food_recs = get_recommendation_type(term, latitude, longitude)
 		response = Template.List(elements=food_recs, top_element_style='large')
-                print(response)
                 return response
 
 
