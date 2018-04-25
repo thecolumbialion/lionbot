@@ -70,4 +70,6 @@ def open_machines(args):
             response = "There are " + laundry_dict[args["parameters"]["hall_residence"]]["washers"] + " washers and " + laundry_dict[args["parameters"]["hall_residence"]]["dryers"] + " dryers available in " + args["parameters"]["hall_residence"]
     return response
     
+if __name__ == '__main__':
+    get_laundry_dict()
 

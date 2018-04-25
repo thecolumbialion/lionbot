@@ -40,6 +40,7 @@ from packages.offcampus.broadway import broadway_rush_msg
 from packages.offcampus.food_recommendations import offcampus_dining_request_msg, get_yelp_info
 from packages.offcampus.mta import mta_subway_info_msg
 from packages.offcampus.food_hours import offcampus_dining_hours_msg
+from packages.offcampus.open_broadway import open_broadway_shows_msg 
 
 #clubs
 from packages.clubs.news import news_msg
@@ -83,6 +84,7 @@ Msg_Fn_Dict = {
         'offcampus_dining_request' : offcampus_dining_request_msg,
         'offcampus_dining_hours' : offcampus_dining_hours_msg,
         'broadway_rush' : broadway_rush_msg,
+        'open_broadway_shows': open_broadway_shows_msg,
         'calendar' : calendar_msg,
         'dining_hall_menu' : dining_hall_menu_msg,
         'dining_hall_food_request' : dining_hall_food_request_msg,
