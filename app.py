@@ -286,10 +286,8 @@ def message_handler(event):
         msg = get_generic_or_msg(intent,result)
         print(type(msg))
         if type(msg) is list:
-            #print('sending as list')
             print(page.send(recipient_id, msg))
         if type(msg) is str:
-            #print('sending as str')
             try:
                 chunks = chunkify(msg)
                 for chunk in chunks:
@@ -297,8 +295,6 @@ def message_handler(event):
             except:
                 return ""
         else:
-            #print('sending as other')
-            #print(msg)
             print(page.send(recipient_id, msg))
 
     elif "smalltalk" in result['action']:
@@ -333,7 +329,6 @@ def received_delivery_confirmation(event):
         for message_id in message_ids:
             pass
     return "delivery confirmed"
-
 
 @page.handle_echo
 def received_echo(event):
