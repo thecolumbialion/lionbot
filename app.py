@@ -209,7 +209,8 @@ def received_postback(event):
     show_persistent_menu()
     recipient_id = event.sender_id
     time_of_postback = event.timestamp
-    payload = event.postback_payload
+    # payload = event.postback_payload
+    payload = event.postback.payload
     try:
         payload = payload.split('/')[1]
     except:
@@ -237,7 +238,8 @@ def message_handler(event):
     recipient_id = event.sender_id
     message = event.message
     user_profile = page.get_user_profile(event.sender_id)
-    response = agent.query(event.message_text)
+    # response = agent.query(event.message_text)
+    response = agent.query(event.message)
     page.typing_on(recipient_id)
     result = {'action': ''}
     try:
@@ -251,9 +253,17 @@ def message_handler(event):
         first_name, last_name, intent = ("", "", "")
 
     try:
-        cur.execute("INSERT INTO All_user_messages VALUES (%s,%s,%s,%s,%s,%s)", (unique_id, user_id, user_lastname, user_firstname, intent, message))
+        # q = "INSERT INTO All_user_messages VALUES (%s,%s,%s,%s,%s,%s)" % (unique_id, user_id, user_lastname, user_firstname, intent, message)
+        q = "INSERT INTO All_user_messages VALUES (%s,%s,%s,%s,%s,%s)" % (unique_id, user_id, last_name, first_name, intent, message)
+        print(q)
+        cur.execute(q)
         conn.commit()
-    except:
+    except psycopg2.Error as pe:
+        print(pe.pgcode)
+    except Exception as e:
+        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+        message = template.format(type(e).__name__, e.args)
+        print(message)
         print("ERROR: Inserting into database failed.")
 
     message_text = message.get("text")
