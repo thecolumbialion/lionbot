@@ -238,8 +238,8 @@ def message_handler(event):
     recipient_id = event.sender_id
     message = event.message
     user_profile = page.get_user_profile(event.sender_id)
-    # response = agent.query(event.message_text)
-    response = agent.query(event.message)
+    response = agent.query(message.get("text"))
+    print(response)
     page.typing_on(recipient_id)
     result = {'action': ''}
     try:
