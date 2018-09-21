@@ -13,7 +13,7 @@ intro_reply = Template.List(elements=[
     Template.GenericElement("Broadway Rush Policies",
                           subtitle="Want to find cheap Hamilton tickets? I have tips for that",
                           image_url="http://columbialion.com/wp-content/uploads/2017/04/broadwaybot.png")
-], top_element_style='large')
+], top_element_style='large', buttons=[])
 
 
 mental_health_resources = Template.List(elements=[
@@ -28,7 +28,7 @@ mental_health_resources = Template.List(elements=[
                           subtitle="Barnard's counseling center for its students",
                           item_url="https://barnard.edu/counsel",
                           image_url="https://barnard.edu/sites/default/files/styles/top_news_view__325x240_/public/barnard-b-blue-square-01.png?itok=tjdz2rnb")
-], top_element_style='large')
+], top_element_style='large', buttons=[])
 
 
 
