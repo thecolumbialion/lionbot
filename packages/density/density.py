@@ -6,6 +6,8 @@ auth_key = 'vsHAK7tggAjSQo7f0F7jfzKeEHeUOlgOa1_3v_rqhQgkSIWxkbNOopdJnRvXrti0'
 
 
 def density_msg(result):
+	print(result)
+	
 	try:
 		location = result['parameters'][density_entities]
 	except:
