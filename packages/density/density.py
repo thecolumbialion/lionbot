@@ -24,7 +24,7 @@ def parse_json(location):
 	percent_parameter = 'percent_full'
 
 	for place in json_response['data']:
-		match = bool(place[building_parameter] in location) || bool(place[floor_parameter] in location) 
+		match = bool(place[building_parameter] in location) or bool(place[floor_parameter] in location) 
 		if match:
 			result_list.append(place[floor_parameter] + ' is ' + place[percent_parameter] + ' full. ')
 		
