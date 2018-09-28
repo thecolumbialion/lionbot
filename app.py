@@ -53,6 +53,8 @@ from packages.etc.weather import weather_msg
 #internal libraries
 from packages.internal.postbacks import intro_reply, health_reply, bot_menu, subscriptions_reply, current_features_msg
 
+#density
+from packages.density.density import density_msg
 
 MAX_MESSAGE_LENGTH = 640
 app = Flask(__name__)
@@ -91,7 +93,8 @@ Msg_Fn_Dict = {
         'health_concern': health_concern_msg,
         'web.search': wisdom_search,
         'meme' : get_meme_msg,
-        'laundry': open_machines_msg}
+        'laundry': open_machines_msg
+        'density': density_msg}
 
 #################
 
