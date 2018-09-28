@@ -7,28 +7,30 @@ auth_key = 'vsHAK7tggAjSQo7f0F7jfzKeEHeUOlgOa1_3v_rqhQgkSIWxkbNOopdJnRvXrti0'
 
 def density_msg(result):
 	print(result)
-	
+
 	try:
-		location = result['parameters'][density_entities]
+		location = result['parameters']['density_entities']
 	except:
-		location = 'Butler'
+		location = 'Avery'
 
 	return parse_json(location) 
 
 def parse_json(location):
-	url = 'http://density.adicu.com/latest/'
+	url = 'http://density.adicu.com/latest?auth_token='+auth_key
 	payload = ''
 	response = requests.request('GET', url, data = payload)
 	json_response  = response.json();
+	#return response
+	
 	building_parameter = 'building_name'
 	floor_parameter = 'group_name'
 	result_list = [];
 	percent_parameter = 'percent_full'
 
 	for place in json_response['data']:
-		match = bool(place[building_parameter] in location) or bool(place[floor_parameter] in location) 
+		match = bool(place[building_parameter] in location) or bool(place[floor_parameter] in location) or bool(location in place[floor_parameter])
 		if match:
-			result_list.append(place[floor_parameter] + ' is ' + place[percent_parameter] + ' full. ')
+			result_list.append(place[floor_parameter] + ' is ' + str(place[percent_parameter]) + '% full. ')
 		
 		
 	return list_to_str(result_list)
