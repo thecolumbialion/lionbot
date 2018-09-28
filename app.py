@@ -93,7 +93,7 @@ Msg_Fn_Dict = {
         'health_concern': health_concern_msg,
         'web.search': wisdom_search,
         'meme' : get_meme_msg,
-        'laundry': open_machines_msg
+        'laundry': open_machines_msg,
         'density': density_msg}
 
 #################
