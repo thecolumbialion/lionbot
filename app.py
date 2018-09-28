@@ -235,8 +235,16 @@ def message_handler(event):
     recipient_id = event.sender_id
     message = event.message
     user_profile = page.get_user_profile(event.sender_id)
+    print("Below is message\n")
+    print(message)
+    print("\n")
+    print("\n")
+
     response = agent.query(message.get("text"))
+    print("Below is response\n")
     print(response)
+    print("\n")
+    print("\n")
     page.typing_on(recipient_id)
     result = {'action': ''}
     try:
@@ -246,6 +254,7 @@ def message_handler(event):
         user_id = str(recipient_id)
         result = response['result']
         intent = result['metadata'].get('intentName', None)
+        defaultResponse = result['fulfillment']['speech']
     except:
         first_name, last_name, intent = ("", "", "")
 
@@ -305,6 +314,9 @@ def message_handler(event):
         else:
             print(page.send(recipient_id, speech))
 
+    elif defaultResponse != '':
+        print(page.send(recipient_id, defaultResponse))
+        
     else:
         error = "I didn't catch that. Ask me again?"
         page.send(recipient_id, error)
