@@ -278,8 +278,10 @@ def message_handler(event):
         msg = get_generic_or_msg(intent,result)
         print(type(msg))
         if type(msg) is list:
+            print('sending as list')
             print(page.send(recipient_id, msg))
         if type(msg) is str:
+            print('sending as str')
             try:
                 chunks = chunkify(msg)
                 for chunk in chunks:
@@ -287,6 +289,8 @@ def message_handler(event):
             except:
                 return ""
         else:
+            print('sending as other')
+            print(msg)
             print(page.send(recipient_id, msg))
 
     elif "smalltalk" in result['action']:
@@ -298,6 +302,7 @@ def message_handler(event):
             print(page.send(recipient_id, speech))
 
     elif defaultResponse != '':
+        print('sending default response')
         print(page.send(recipient_id, defaultResponse))
         
     else:
