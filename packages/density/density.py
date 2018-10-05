@@ -1,8 +1,8 @@
 import json
 import requests
+import os, sys
 
-
-auth_key = 'vsHAK7tggAjSQo7f0F7jfzKeEHeUOlgOa1_3v_rqhQgkSIWxkbNOopdJnRvXrti0'
+auth_key = os.environ['DENSITY_API_KEY']
 
 
 def density_msg(result):
