@@ -234,16 +234,7 @@ def message_handler(event):
     recipient_id = event.sender_id
     message = event.message
     user_profile = page.get_user_profile(event.sender_id)
-    print("Below is message\n")
-    print(message)
-    print("\n")
-    print("\n")
-
     response = agent.query(message.get("text"))
-    print("Below is response\n")
-    print(response)
-    print("\n")
-    print("\n")
     page.typing_on(recipient_id)
     result = {'action': ''}
     try:
@@ -259,7 +250,6 @@ def message_handler(event):
 
     try:
         q = "INSERT INTO All_user_messages VALUES (%s,%s,%s,%s,%s,%s)" % (unique_id, user_id, last_name, first_name, intent, message)
-        print(q)
         cur.execute(q)
         conn.commit()
     except:
