@@ -1,9 +1,10 @@
 import json
 import requests
 import os, sys
+import heapq
 
 auth_key = os.environ['DENSITY_API_KEY']
-
+types_of_places= {'eat':["JJ's Place", "John Jay Dining Hall", "John Jay"], 'study': ["Avery", "Butler", "Lehman Library", "Lerner", "Northwest Corner Building", "East Asian Library", "Uris"]}
 
 def density_msg(result):
 	print(result)
@@ -19,24 +20,30 @@ def parse_json(location):
 	url = 'http://density.adicu.com/latest?auth_token='+auth_key
 	payload = ''
 	response = requests.request('GET', url, data = payload)
-	json_response  = response.json();
-	#return response
-	
+	json_response  = response.json()
 	building_parameter = 'building_name'
 	floor_parameter = 'group_name'
-	result_list = [];
+	result_list = []
 	percent_parameter = 'percent_full'
 	match_threshold = 0.8
+	buildings_comparison_number = 5
+	m_heap = []
+	
+	if location=='study' or location == 'eat':
+		for place in json_response['data']:
+			if place[building_parameter] in types_of_places[location]:
+				heapq.heappush(m_heap, (place[percent_parameter],place[floor_parameter]))
+				
+		result_list.append('These are the least crowded places to '+ str(location)+' on campus right now:')
 
-	for place in json_response['data']:
-		temp_match = match_percentage(place, building_parameter, floor_parameter, location)
-		if temp_match > match_threshold:
-			result_list.append(place[floor_parameter] + ' is ' + str(place[percent_parameter]) + '% full. ')
-		'''match = bool(place[building_parameter] in location) or bool(place[floor_parameter] in location) or bool(location in place[floor_parameter])
-		if match:
-			result_list.append(place[floor_parameter] + ' is ' + str(place[percent_parameter]) + '% full. ')
-		'''
-		
+		for i in range(min(buildings_comparison_number, len(m_heap))):
+			item = heapq.heappop(m_heap)
+			result_list.append('\t'+item[1]+' is '+str(item[0]) + '% full')
+	else:
+		for place in json_response['data']:
+			temp_match = match_percentage(place, building_parameter, floor_parameter, location)
+			if temp_match > match_threshold:
+				result_list.append(place[floor_parameter] + ' is ' + str(place[percent_parameter]) + '% full.')
 	return list_to_str(result_list)
 
 def list_to_str(list_name):
