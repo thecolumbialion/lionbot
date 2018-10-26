@@ -133,6 +133,28 @@ conn = psycopg2.connect(
     )
 cur = conn.cursor()
 
+@app.route('/options', methods=['GET'])
+def getwebview():
+    referer = request.headers.get('Referer')
+    res = render_template('options.html')
+
+
+    if (referer):
+        try:
+            if (referer.index('www.messenger.com') >= 0):
+                res.headers['X-Frame-Options'] = 'ALLOW-FROM https://www.messenger.com/'
+                return res
+        except ValueError as ve:
+            print(ve)
+
+        try:
+            if (referer.index('www.facebook.com') >= 0):
+                res.headers['X-Frame-Options'] = 'ALLOW-FROM https://www.facebook.com/'
+                return res
+        except ValueError as ve:
+            print(ve)
+
+    return res
 
 @app.route('/webhook', methods=['GET'])
 def validate():
