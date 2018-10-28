@@ -1,5 +1,6 @@
 pip-selfcheck.json
 Scripts/
+lionbot/
 pyvenv.cfg
 # Created by https://www.gitignore.io/api/python
 

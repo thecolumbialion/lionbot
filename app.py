@@ -209,7 +209,6 @@ def received_postback(event):
     show_persistent_menu()
     recipient_id = event.sender_id
     time_of_postback = event.timestamp
-    # payload = event.postback_payload
     payload = event.postback.payload
     try:
         payload = payload.split('/')[1]
@@ -239,7 +238,6 @@ def message_handler(event):
     message = event.message
     user_profile = page.get_user_profile(event.sender_id)
     response = agent.query(message.get("text"))
-    print(response)
     page.typing_on(recipient_id)
     result = {'action': ''}
     try:
@@ -249,13 +247,12 @@ def message_handler(event):
         user_id = str(recipient_id)
         result = response['result']
         intent = result['metadata'].get('intentName', None)
+        defaultResponse = result['fulfillment']['speech']
     except:
         first_name, last_name, intent = ("", "", "")
 
     try:
-        # q = "INSERT INTO All_user_messages VALUES (%s,%s,%s,%s,%s,%s)" % (unique_id, user_id, user_lastname, user_firstname, intent, message)
         q = "INSERT INTO All_user_messages VALUES (%s,%s,%s,%s,%s,%s)" % (unique_id, user_id, last_name, first_name, intent, message)
-        print(q)
         cur.execute(q)
         conn.commit()
     except psycopg2.Error as pe:
@@ -289,10 +286,10 @@ def message_handler(event):
         msg = get_generic_or_msg(intent,result)
         print(type(msg))
         if type(msg) is list:
-            #print('sending as list')
+            print('sending as list')
             print(page.send(recipient_id, msg))
         if type(msg) is str:
-            #print('sending as str')
+            print('sending as str')
             try:
                 chunks = chunkify(msg)
                 for chunk in chunks:
@@ -300,8 +297,8 @@ def message_handler(event):
             except:
                 return ""
         else:
-            #print('sending as other')
-            #print(msg)
+            print('sending as other')
+            print(msg)
             print(page.send(recipient_id, msg))
 
     elif "smalltalk" in result['action']:
@@ -312,6 +309,10 @@ def message_handler(event):
         else:
             print(page.send(recipient_id, speech))
 
+    elif defaultResponse != '':
+        print('sending default response')
+        print(page.send(recipient_id, defaultResponse))
+        
     else:
         error = "I didn't catch that. Ask me again?"
         page.send(recipient_id, error)
@@ -336,7 +337,6 @@ def received_delivery_confirmation(event):
         for message_id in message_ids:
             pass
     return "delivery confirmed"
-
 
 @page.handle_echo
 def received_echo(event):
