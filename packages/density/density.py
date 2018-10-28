@@ -7,19 +7,27 @@ auth_key = os.environ['DENSITY_API_KEY']
 types_of_places= {'eat':["JJ's Place", "John Jay Dining Hall", "John Jay"], 'study': ["Avery", "Butler", "Lehman Library", "Lerner", "Northwest Corner Building", "East Asian Library", "Uris"]}
 
 def density_msg(result):
-	print(result)
-
 	try:
 		location = result['parameters']['density_entities']
 	except:
 		location = 'NoCo'
 
-	return parse_json(location) 
-
-def parse_json(location):
 	url = 'http://density.adicu.com/latest?auth_token='+auth_key
 	payload = ''
-	response = requests.request('GET', url, data = payload)
+	reponse = requests.request('GET', url, data = payload)
+
+	return parse_json(response, location) 
+
+
+
+"""
+Returns a list of locations based on what the user is asking for
+:param response: Density API call result 
+:param location: String representation of the location the user is asking about.
+:return: Formatted string showing % full for location
+:rtype: String
+"""
+def parse_json(response, location):
 	json_response  = response.json()
 	building_parameter = 'building_name'
 	floor_parameter = 'group_name'
@@ -46,6 +54,12 @@ def parse_json(location):
 				result_list.append(place[floor_parameter] + ' is ' + str(place[percent_parameter]) + '% full.')
 	return list_to_str(result_list)
 
+"""
+Formats a list into a string.
+:param list_name: List to be formatted
+:return: String rep of list
+:rtype: string
+"""
 def list_to_str(list_name):
 	final_str = ''
 	for string in list_name:
@@ -58,7 +72,13 @@ def match_percentage(place, building_parameter, floor_parameter, location):
 	ratio = max(dice_coefficient(place[building_parameter], location),dice_coefficient(place[floor_parameter], location))
 	return ratio
 
-
+"""
+Creates a coefficient that shows how similar two strings are based on bigrams
+:param a: String 1
+:param b: String 2
+:return: percentage match as a float
+:rtype: float
+"""
 def dice_coefficient(a,b):
     if not len(a) or not len(b): return 0.0
     """ quick case for true duplicates """
