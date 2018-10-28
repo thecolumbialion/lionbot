@@ -14,7 +14,7 @@ def density_msg(result):
 
 	url = 'http://density.adicu.com/latest?auth_token='+auth_key
 	payload = ''
-	reponse = requests.request('GET', url, data = payload)
+	response = requests.request('GET', url, data = payload)
 
 	return parse_json(response, location) 
 
@@ -22,10 +22,9 @@ def density_msg(result):
 
 """
 Returns a list of locations based on what the user is asking for
-:param response: Density API call result 
-:param location: String representation of the location the user is asking about.
-:return: Formatted string showing % full for location
-:rtype: String
+:param response: (String) Density API call result 
+:param location: (String) String representation of the location the user is asking about.
+:return: (String) Formatted results showing % full for location
 """
 def parse_json(response, location):
 	json_response  = response.json()
@@ -56,9 +55,8 @@ def parse_json(response, location):
 
 """
 Formats a list into a string.
-:param list_name: List to be formatted
-:return: String rep of list
-:rtype: string
+:param list_name: (tuple of String) List to be formatted
+:return: (String) String representation of list
 """
 def list_to_str(list_name):
 	final_str = ''
@@ -74,10 +72,9 @@ def match_percentage(place, building_parameter, floor_parameter, location):
 
 """
 Creates a coefficient that shows how similar two strings are based on bigrams
-:param a: String 1
-:param b: String 2
-:return: percentage match as a float
-:rtype: float
+:param a: (String) String 1
+:param b: (String) String 2
+:return: (float) percentage match 
 """
 def dice_coefficient(a,b):
     if not len(a) or not len(b): return 0.0
