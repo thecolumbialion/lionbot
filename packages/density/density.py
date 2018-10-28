@@ -55,7 +55,7 @@ def parse_json(response, location):
 
 """
 Formats a list into a string.
-:param list_name: (tuple of String) List to be formatted
+:param list_name: (List of String) List to be formatted
 :return: (String) String representation of list
 """
 def list_to_str(list_name):
