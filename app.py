@@ -53,6 +53,8 @@ from packages.etc.weather import weather_msg
 #internal libraries
 from packages.internal.postbacks import intro_reply, health_reply, bot_menu, subscriptions_reply, current_features_msg
 
+#density
+from packages.density.density import density_msg
 
 MAX_MESSAGE_LENGTH = 640
 app = Flask(__name__)
@@ -91,7 +93,8 @@ Msg_Fn_Dict = {
         'health_concern': health_concern_msg,
         'web.search': wisdom_search,
         'meme' : get_meme_msg,
-        'laundry': open_machines_msg}
+        'laundry': open_machines_msg,
+        'density': density_msg}
 
 #################
 
@@ -252,7 +255,12 @@ def message_handler(event):
         q = "INSERT INTO All_user_messages VALUES (%s,%s,%s,%s,%s,%s)" % (unique_id, user_id, last_name, first_name, intent, message)
         cur.execute(q)
         conn.commit()
-    except:
+    except psycopg2.Error as pe:
+        print(pe.pgcode)
+    except Exception as e:
+        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+        message = template.format(type(e).__name__, e.args)
+        print(message)
         print("ERROR: Inserting into database failed.")
 
     message_text = message.get("text")
