@@ -156,6 +156,13 @@ def getwebview():
 
     return res
 
+@app.route('/optionspostback', methods=['POST'])
+def getDataFromWebView():
+    print(request.get_json())
+    #logic to filter and enter into dialogflow + db here
+    #page.send("Tip submitted")
+    return render_template('options.html')
+
 @app.route('/webhook', methods=['GET'])
 def validate():
     if request.args.get('hub.mode', '') == 'subscribe' and \
