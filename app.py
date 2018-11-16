@@ -13,30 +13,30 @@ from fbmq import Attachment, Template, QuickReply, NotificationType, fbmq
 #system libraries
 import os
 
-#database related libraries 
+#database related libraries
 import psycopg2
 import urllib.parse
 import uuid
 
-#wellness libaries 
+#wellness libaries
 from packages.wellness.health import health_resources, health_concern_msg
 
-#dining 
+#dining
 from packages.dining.open_hall_finder import dininghallisOpen_msg
 #from dining.menu_scraper import dining_hall_menu_msg
 from packages.dining.dining import dining_events_msg, dining_hall_food_request_msg, dining_hall_menu_msg
 
-#academic  
+#academic
 from packages.academic.library_hours import libraries_msg
 from packages.academic.academic_calendar import calendar_msg
 from packages.academic.printers import printers_msg
 
 #housing
-from packages.housing.cutv_channels import tv_network_msg 
+from packages.housing.cutv_channels import tv_network_msg
 from packages.housing.laundry import open_machines_msg
 
 #offcampus
-from packages.offcampus.broadway import broadway_rush_msg 
+from packages.offcampus.broadway import broadway_rush_msg
 from packages.offcampus.food_recommendations import offcampus_dining_request_msg, get_yelp_info
 from packages.offcampus.mta import mta_subway_info_msg
 from packages.offcampus.food_hours import offcampus_dining_hours_msg
@@ -172,7 +172,10 @@ def getDataFromWebView():
 
     question = request.form['question']
     # todo tip_number  = get fromDB
-
+    '''q = 'SELECT MAX(tip_no) FROM tip_submission;'
+    cur.execute(q)
+    conn.commit()
+    '''
     response = agent.query(question)
     result = {'action': ''}
     try:
@@ -311,7 +314,9 @@ def getDataFromWebView():
                 #reply eith tip has been added to an existing question
 
         # todo enter into database the tip number, question, tip, categories
-        
+        '''q = "INSERT INTO tip_submission VALUES (%s, '%s', '%s',ARRAY[%s], '%s');" % (tip_number, tip, question,categories, uni)
+        cur.execute(q)
+        conn.commit()'''
     return render_template('options.html')
 
 @app.route('/webhook', methods=['GET'])
@@ -403,7 +408,7 @@ def received_postback(event):
     elif payload == 'health':
         return "health done"
     elif payload == 'subscriptions':
-        
+
         return "subscriptions done"
     else:
         return "ERROR: Menu not found"
@@ -487,7 +492,7 @@ def message_handler(event):
     elif defaultResponse != '':
         print('sending default response')
         print(page.send(recipient_id, defaultResponse))
-        
+
     else:
         error = "I didn't catch that. Ask me again?"
         page.send(recipient_id, error)
