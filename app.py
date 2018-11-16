@@ -158,9 +158,31 @@ def getwebview():
 
 @app.route('/optionspostback', methods=['POST'])
 def getDataFromWebView():
-    print(request.get_json())
-    #logic to filter and enter into dialogflow + db here
-    #page.send("Tip submitted")
+    print(request.form['tip'])
+
+    question = request.form['question']
+
+    #filter somewhere
+    response = agent.query(question)
+    result = {'action': ''}
+    try:
+        result = response['result']
+        intent = result['metadata'].get('intentName', None)
+
+        defaultResponse = result['fulfillment']['speech']
+
+        #if intent is unknown, some logic ...
+
+        #else
+        if 'TIP' in intent:
+            #POST adding a default answer to intent
+            # update databse
+            #page.send("Tip submitted")
+        else:
+            #POST updating the intent name and adding student tip
+            # update database
+            #reply eith tip has been added to an existing question
+        
     return render_template('options.html')
 
 @app.route('/webhook', methods=['GET'])
