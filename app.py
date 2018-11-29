@@ -172,10 +172,11 @@ def getDataFromWebView():
 
     question = request.form['question']
     # todo tip_number  = get fromDB
-    '''q = 'SELECT MAX(tip_no) FROM tip_submission;'
+    q = 'SELECT MAX(tip_no) FROM tip_submission;'
     cur.execute(q)
     conn.commit()
-    '''
+    tip_number = cur.fetchone() + 1
+    print("tip number: %d" % tip_number)
     response = agent.query(question)
     result = {'action': ''}
     try:
