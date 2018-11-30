@@ -186,83 +186,28 @@ def getDataFromWebView():
 
         if intent == 'Default Fallback Intent':
             #POST add new intent adding tip as a default response
-            #page.send("Tip submitted")
-            agent.intents.create(
-                'TIP#' + tip_number,
-                'templates': [
-                    question
-                ],
-                'Response': tip
-            )
-
+            agent.intents.create('TIP#' + tip_number,None,[question],tip)
             page.send("Tip submitted")
 
         else:
             defaultResponse = result['fulfillment']['speech']
             if 'TIP' in intent:
+                # open up another webview that asks if they want to
+                # add the tip too existing intent or create a new intent with their
+                # question.
+
+                # take response and respond accordingly 
+                
+                # if they want to update 
                 # POST adding a default answer to intent
                 # page.send("Tip submitted")
-                agent.intents.create(
-                    'TIP#' + tip_number,
-                    'templates': [
-                        question
-                    ],
-                    'Response': defaultResponse + "\n" + tip
-                )
 
                 body = {
                         "fallbackIntent": false,
                         "name": 'TIP#' + tip_number,
                         "priority": 500000,
-                        "responses": [
-                        {
-                          "action": "add.list",
-                          "affectedContexts": [
-                            {
-                              "lifespan": 5,
-                              "name": "shop",
-                              "parameters": {}
-                            },
-                            {
-                              "lifespan": 5,
-                              "name": "chosen-fruit",
-                              "parameters": {}
-                            }
-                          ],
-                          "defaultResponsePlatforms": {
-                            "google": true
-                          },
-                          "messages": [
-                            {
-                              "platform": "google",
-                              "textToSpeech": "Okay. How many $fruit?",
-                              "type": "simple_response"
-                            },
-                            {
-                              "speech": "Okay how many $fruit?",
-                              "type": 0
-                            }
-                          ],
-                          "parameters": [
-                            {
-                              "dataType": "@fruit",
-                              "isList": true,
-                              "name": "fruit",
-                              "prompts": [
-                                "I didn't get that. What fruit did you want?"
-                              ],
-                              "required": true,
-                              "value": "$fruit"
-                            }
-                          ],
-                          "resetContexts": false
-                        }
-                        ],
-                        "templates": [
-                        "@fruit:fruit ",
-                        "Add @fruit:fruit ",
-                        "I need @fruit:fruit "
-                        ],
+                        "responses": [],
+                        "templates": [],
                         "userSays": [
                         {
                           "count": 0,
@@ -308,17 +253,17 @@ def getDataFromWebView():
                         "webhookUsed": false
                         }
                 request_session.post(base_url + "/intents?v=20150910", body).json()
+                page.send("Tip added to existing question")
 
-                page.send("Tip submitted")
+                #if user wants new question
+                page.send("Tip added to new question")
             else:
-                #POST updating the intent name to contain TIP and add student tip
-                #reply eith tip has been added to an existing question
+                #reply with "Sorry, ADI already handles that question"
 
         # todo enter into database the tip number, question, tip, categories
         '''q = "INSERT INTO tip_submission VALUES (%s, '%s', '%s',ARRAY[%s], '%s');" % (tip_number, tip, question,categories, uni)
         cur.execute(q)
         conn.commit()'''
-    return render_template('options.html')
 
 @app.route('/webhook', methods=['GET'])
 def validate():
