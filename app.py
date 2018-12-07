@@ -186,21 +186,22 @@ def submitTip(event):
     page.send(recipient_id, 'Parsing worked! Checking your tip ...')
 
     # todo tip_number  = get fromDB
-
-    q = 'SELECT MAX(tip_no) FROM tip_submission;'
-    cur.execute(q)
-    conn.commit()
-    x = cur.fetchone()
-    tip_number = x[0] + 1
-    print("tip number: %d" % tip_number)
-    response = agent.query(question)
-    result = {'action': ''}
-    print("asked agent about question")
+    try:
+        q = 'SELECT MAX(tip_no) FROM tip_submission;'
+        cur.execute(q)
+        x = cur.fetchone()
+        tip_number = x[0] + 1
+        print("tip number: %d" % tip_number)
+        response = agent.query(question)
+        result = {'action': ''}
+        print("asked agent about question")
+    except Exception as e:
+        print("this is the exception - ", e)
     try:
         result = response['result']
         intent = result['metadata'].get('intentName', None)
 
-        print("checking intent of question")
+        print("checking intent of question. Intent is: " + intent)
         if intent == 'tip_filter':
             print("Went to if")
             page.send(recipient_id, "oops...your tip got rejected!")
@@ -211,7 +212,8 @@ def submitTip(event):
             #POST add new intent adding tip as a default response
             try:
                 #print(agent.intents.all())
-                print(agent.intents.create('TIP#' + str(tip_number),['test'],[question],[tip]))
+                response = [{"resetContexts": False, "affectedContexts": [], "parameters": [], "messages": [{"type": 0, "lang": "en", "speech": tip}], "defaultResponsePlatforms": {}, "speech": []}]
+                print(agent.intents.create(name = 'TIP#' + str(tip_number),contexts = [], templates= [question], responses = response))
                 """
                 body = {
                         "fallbackIntent": False,
@@ -270,9 +272,9 @@ def submitTip(event):
                 page.send("Sorry, ADI already handles that question")
 
         # todo enter into database the tip number, question, tip, categories
-        '''q = "INSERT INTO tip_submission VALUES (%s, '%s', '%s',ARRAY[%s], '%s');" % (tip_number, tip, question,categories, uni)
+        q = "INSERT INTO tip_submission VALUES (%s, '%s', '%s',ARRAY[%s], '%s');" % (tip_number, tip, question,categories, uni)
         cur.execute(q)
-        conn.commit()'''
+        conn.commit()
     except:
         page.send("uh-oh something went wrong!")
 
