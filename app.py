@@ -133,40 +133,30 @@ conn = psycopg2.connect(
     )
 cur = conn.cursor()
 
-@app.route('/options', methods=['GET'])
-def getwebview():
-    referer = request.headers.get('Referer')
-    res = render_template('options.html')
+def submitTip(event):
 
-
-    if (referer):
-        try:
-            if (referer.index('www.messenger.com') >= 0):
-                res.headers['X-Frame-Options'] = 'ALLOW-FROM https://www.messenger.com/'
-                return res
-        except ValueError as ve:
-            print(ve)
-
-        try:
-            if (referer.index('www.facebook.com') >= 0):
-                res.headers['X-Frame-Options'] = 'ALLOW-FROM https://www.facebook.com/'
-                return res
-        except ValueError as ve:
-            print(ve)
-
-    return res
-
-@app.route('/optionspostback', methods=['POST'])
-def getDataFromWebView():
-
+    categoriesDictionary = {'1':'classes','2':'questions', '3':'student'}
     #get request ready
+<<<<<<< HEAD
     # base_url = 'https://api.api.ai/v1'
     # request_session = requests.Session()
     # self.request_session.headers.update({
     #         'Authorization': 'Bearer %s' % os.environ['DEVELOPER_ACCESS_TOKEN'],
     #         'ocp-apim-subscription-key': self.sub_key,
     # })
+=======
+    #base_url = 'https://api.api.ai/v1'
+    #request_session = request.Session()
+    #self.request_session.headers.update({
+            #'Authorization': 'Bearer %s' % os.environ['DEVELOPER_ACCESS_TOKEN'],
+            #'ocp-apim-subscription-key': self.sub_key,
+    #})
+>>>>>>> 6aa64330e58c235b99c7b5544fe32b4e47d56cc8
 
+    message = "uni: ddd123, question: Is this a test question?, tip: Test questions are good, categories: [2,3]"
+
+    tokens = message.split('/n')
+    uni = tokens[0].substring()
 
     tip = request.form['tip']
     print("tip: ",  tip)
@@ -187,6 +177,7 @@ def getDataFromWebView():
     q = 'SELECT MAX(tip_no) FROM tip_submission;'
     cur.execute(q)
     conn.commit()
+<<<<<<< HEAD
     # print(cur.fetchone())
     result = (cur.fetchone())[0]
     tip_number = result + 1 #TODO: remove!
@@ -338,6 +329,67 @@ def getDataFromWebView():
     conn.commit()
     print("result:", cur.fetchall())
     return render_template('options.html')
+=======
+    tip_number = 0
+    print("tip number: %d" % tip_number)
+    response = agent.query(question)
+    result = {'action': ''}
+    try:
+        result = response['result']
+        intent = result['metadata'].get('intentName', None)
+        
+        if intent == 'tip_filter':
+            page.send("oops...your tip got rejected!")
+
+        if intent == 'Default Fallback Intent':
+            #POST add new intent adding tip as a default response
+            agent.intents.create('TIP#' + tip_number,None,[question],tip)
+            print("tip submitted")
+            page.send("Tip submitted")
+
+        else:
+            defaultResponse = result['fulfillment']['speech']
+            tipID = result['metadata']['intentId']
+            if 'TIP' in intent:
+                # get question for follow up questions
+                request_session.get(base_url + "/intents?%sv=20150910"%tipID)
+
+                # open up another webview that asks if they want to
+                # add the tip to existing intent or create a new intent with their
+                # question.
+
+                # take response and respond accordingly 
+                
+                # if they want to update 
+                # POST adding a default answer to intent
+                # page.send("Tip submitted")
+
+                body = {
+                        "fallbackIntent": false,
+                        "name": 'TIP#' + tip_number,
+                        "priority": 500000,
+                        "responses": [],
+                        "templates": []
+                        }
+
+                request_session.post(base_url + "/intents?v=20150910", body).json()
+                page.send("Tip added to existing question")
+
+                #if user wants new question
+                page.send("Tip added to new question")
+            else:
+                print("supposed to be heeerrreeeeee")
+                agent.intents.create('TIP#' + tip_number,None,[question],tip)
+                page.send("Tip submitted")
+                #reply with "Sorry, ADI already handles that question"
+
+        # todo enter into database the tip number, question, tip, categories
+        '''q = "INSERT INTO tip_submission VALUES (%s, '%s', '%s',ARRAY[%s], '%s');" % (tip_number, tip, question,categories, uni)
+        cur.execute(q)
+        conn.commit()'''
+    except:
+        page.send("uh-oh something went wrong!")
+>>>>>>> 6aa64330e58c235b99c7b5544fe32b4e47d56cc8
 
 @app.route('/webhook', methods=['GET'])
 def validate():
