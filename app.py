@@ -160,164 +160,183 @@ def getwebview():
 def getDataFromWebView():
 
     #get request ready
-    base_url = 'https://api.api.ai/v1'
-    request_session = requests.Session()
-    self.request_session.headers.update({
-            'Authorization': 'Bearer %s' % os.environ['DEVELOPER_ACCESS_TOKEN'],
-            'ocp-apim-subscription-key': self.sub_key,
-    })
+    # base_url = 'https://api.api.ai/v1'
+    # request_session = requests.Session()
+    # self.request_session.headers.update({
+    #         'Authorization': 'Bearer %s' % os.environ['DEVELOPER_ACCESS_TOKEN'],
+    #         'ocp-apim-subscription-key': self.sub_key,
+    # })
 
 
     tip = request.form['tip']
-
+    print("tip: ",  tip)
     question = request.form['question']
+    print("question: ", question)
+    uni = request.form['uni']
+    print("uni: ", uni)
+    categories = []
+    if request.form.get('category1'):
+        categories.append("category1")
+    if request.form.get('category2'):
+        categories.append("category2")
+    if request.form.get('category3'):
+        categories.append("category3")
+    print("categories: ", categories)
     # todo tip_number  = get fromDB
+
     q = 'SELECT MAX(tip_no) FROM tip_submission;'
     cur.execute(q)
     conn.commit()
-    tip_number = cur.fetchone() + 1
-    print("tip number: %d" % tip_number)
-    response = agent.query(question)
-    result = {'action': ''}
-    try:
-        result = response['result']
-        intent = result['metadata'].get('intentName', None)
-        # todo filter somewhere
-
-        if intent == 'Default Fallback Intent':
-            #POST add new intent adding tip as a default response
-            #page.send("Tip submitted")
-            agent.intents.create(
-                'TIP#' + tip_number,
-                'templates': [
-                    question
-                ],
-                'Response': tip
-            )
-
-            page.send("Tip submitted")
-
-        else:
-            defaultResponse = result['fulfillment']['speech']
-            if 'TIP' in intent:
-                # POST adding a default answer to intent
-                # page.send("Tip submitted")
-                agent.intents.create(
-                    'TIP#' + tip_number,
-                    'templates': [
-                        question
-                    ],
-                    'Response': defaultResponse + "\n" + tip
-                )
-
-                body = {
-                        "fallbackIntent": false,
-                        "name": 'TIP#' + tip_number,
-                        "priority": 500000,
-                        "responses": [
-                        {
-                          "action": "add.list",
-                          "affectedContexts": [
-                            {
-                              "lifespan": 5,
-                              "name": "shop",
-                              "parameters": {}
-                            },
-                            {
-                              "lifespan": 5,
-                              "name": "chosen-fruit",
-                              "parameters": {}
-                            }
-                          ],
-                          "defaultResponsePlatforms": {
-                            "google": true
-                          },
-                          "messages": [
-                            {
-                              "platform": "google",
-                              "textToSpeech": "Okay. How many $fruit?",
-                              "type": "simple_response"
-                            },
-                            {
-                              "speech": "Okay how many $fruit?",
-                              "type": 0
-                            }
-                          ],
-                          "parameters": [
-                            {
-                              "dataType": "@fruit",
-                              "isList": true,
-                              "name": "fruit",
-                              "prompts": [
-                                "I didn't get that. What fruit did you want?"
-                              ],
-                              "required": true,
-                              "value": "$fruit"
-                            }
-                          ],
-                          "resetContexts": false
-                        }
-                        ],
-                        "templates": [
-                        "@fruit:fruit ",
-                        "Add @fruit:fruit ",
-                        "I need @fruit:fruit "
-                        ],
-                        "userSays": [
-                        {
-                          "count": 0,
-                          "data": [
-                            {
-                              "alias": "fruit",
-                              "meta": "@fruit",
-                              "text": "oranges",
-                              "userDefined": true
-                            }
-                          ]
-                        },
-                        {
-                          "count": 0,
-                          "data": [
-                            {
-                              "text": "Add "
-                            },
-                            {
-                              "alias": "fruit",
-                              "meta": "@fruit",
-                              "text": "bananas",
-                              "userDefined": true
-                            }
-                          ]
-                        },
-                        {
-                          "count": 0,
-                          "data": [
-                            {
-                              "text": "I need "
-                            },
-                            {
-                              "alias": "fruit",
-                              "meta": "@fruit",
-                              "text": "apples",
-                              "userDefined": true
-                            }
-                          ]
-                        }
-                        ],
-                        "webhookForSlotFilling": false,
-                        "webhookUsed": false
-                        }
-                request_session.post(base_url + "/intents?v=20150910", body).json()
-
-                page.send("Tip submitted")
-            else:
+    # print(cur.fetchone())
+    result = (cur.fetchone())[0]
+    tip_number = result + 1 #TODO: remove!
+    print(tip_number)
+    # print("tip number: %d" % tip_number)'''
+    # response = agent.query(question)
+    # result = {'action': ''}
+    # try:
+    #     result = response['result']
+    #     intent = result['metadata'].get('intentName', None)
+    #     # todo filter somewhere
+    #
+    #     if intent == 'Default Fallback Intent':
+    #         #POST add new intent adding tip as a default response
+    #         #page.send("Tip submitted")
+    #         agent.intents.create(
+    #             'TIP#' + tip_number,
+    #             'templates': [
+    #                 question
+    #             ],
+    #             'Response': tip
+    #         )
+    #
+    #         page.send("Tip submitted")
+    #
+    #     else:
+    #         defaultResponse = result['fulfillment']['speech']
+    #         if 'TIP' in intent:
+    #             # POST adding a default answer to intent
+    #             # page.send("Tip submitted")
+    #             agent.intents.create(
+    #                 'TIP#' + tip_number,
+    #                 'templates': [
+    #                     question
+    #                 ],
+    #                 'Response': defaultResponse + "\n" + tip
+    #             )
+    #
+    #             body = {
+    #                     "fallbackIntent": false,
+    #                     "name": 'TIP#' + tip_number,
+    #                     "priority": 500000,
+    #                     "responses": [
+    #                     {
+    #                       "action": "add.list",
+    #                       "affectedContexts": [
+    #                         {
+    #                           "lifespan": 5,
+    #                           "name": "shop",
+    #                           "parameters": {}
+    #                         },
+    #                         {
+    #                           "lifespan": 5,
+    #                           "name": "chosen-fruit",
+    #                           "parameters": {}
+    #                         }
+    #                       ],
+    #                       "defaultResponsePlatforms": {
+    #                         "google": true
+    #                       },
+    #                       "messages": [
+    #                         {
+    #                           "platform": "google",
+    #                           "textToSpeech": "Okay. How many $fruit?",
+    #                           "type": "simple_response"
+    #                         },
+    #                         {
+    #                           "speech": "Okay how many $fruit?",
+    #                           "type": 0
+    #                         }
+    #                       ],
+    #                       "parameters": [
+    #                         {
+    #                           "dataType": "@fruit",
+    #                           "isList": true,
+    #                           "name": "fruit",
+    #                           "prompts": [
+    #                             "I didn't get that. What fruit did you want?"
+    #                           ],
+    #                           "required": true,
+    #                           "value": "$fruit"
+    #                         }
+    #                       ],
+    #                       "resetContexts": false
+    #                     }
+    #                     ],
+    #                     "templates": [
+    #                     "@fruit:fruit ",
+    #                     "Add @fruit:fruit ",
+    #                     "I need @fruit:fruit "
+    #                     ],
+    #                     "userSays": [
+    #                     {
+    #                       "count": 0,
+    #                       "data": [
+    #                         {
+    #                           "alias": "fruit",
+    #                           "meta": "@fruit",
+    #                           "text": "oranges",
+    #                           "userDefined": true
+    #                         }
+    #                       ]
+    #                     },
+    #                     {
+    #                       "count": 0,
+    #                       "data": [
+    #                         {
+    #                           "text": "Add "
+    #                         },
+    #                         {
+    #                           "alias": "fruit",
+    #                           "meta": "@fruit",
+    #                           "text": "bananas",
+    #                           "userDefined": true
+    #                         }
+    #                       ]
+    #                     },
+    #                     {
+    #                       "count": 0,
+    #                       "data": [
+    #                         {
+    #                           "text": "I need "
+    #                         },
+    #                         {
+    #                           "alias": "fruit",
+    #                           "meta": "@fruit",
+    #                           "text": "apples",
+    #                           "userDefined": true
+    #                         }
+    #                       ]
+    #                     }
+    #                     ],
+    #                     "webhookForSlotFilling": false,
+    #                     "webhookUsed": false
+    #                     }
+    #             request_session.post(base_url + "/intents?v=20150910", body).json()
+    #
+    #             page.send("Tip submitted")"""
+            # else:
                 #POST updating the intent name to contain TIP and add student tip
                 #reply eith tip has been added to an existing question
 
         # todo enter into database the tip number, question, tip, categories
-        '''q = "INSERT INTO tip_submission VALUES (%s, '%s', '%s',ARRAY[%s], '%s');" % (tip_number, tip, question,categories, uni)
-        cur.execute(q)
-        conn.commit()'''
+    # q = "INSERT INTO tip_submission VALUES (%s, '%s', '%s',ARRAY[%s], '%s');" % (tip_number, tip, question,categories, uni)
+    # conn.commit()
+    # cur.execute(q)
+    q = "SELECT * FROM tip_submission"
+    cur.execute(q)
+    conn.commit()
+    print("result:", cur.fetchall())
     return render_template('options.html')
 
 @app.route('/webhook', methods=['GET'])
