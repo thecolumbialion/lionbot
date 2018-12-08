@@ -144,7 +144,7 @@ def submitTip(event):
     recipient_id = event.sender_id
     message = event.message.get("text")
     #message = "uni: ddd123, question: Is this a test question?, tip: Test questions are good, categories: [2,3]"
-    
+
 
     #get request ready
     """
@@ -173,7 +173,7 @@ def submitTip(event):
         while cat < len(tokens):
             categories.append(catDict[tokens[cat].strip()])
             cat += 1
-     
+
         print('tip parsing worked!')
     except Exception as e:
         print('Student submitted wrongly formatted tip', str(e))
@@ -187,6 +187,14 @@ def submitTip(event):
 
     # todo tip_number  = get fromDB
     try:
+        conn = psycopg2.connect(
+            database=url.path[1:],
+            user=url.username,
+            password=url.password,
+            host=url.hostname,
+            port=url.port
+        )
+        cur = conn.cursor()
         q = 'SELECT MAX(tip_no) FROM tip_submission;'
         cur.execute(q)
         x = cur.fetchone()
@@ -225,7 +233,19 @@ def submitTip(event):
 
                 print(request_session.post(base_url + "/intents?v=20150910", body).json())
                 """
-
+                # conn = psycopg2.connect(
+                # database=url.path[1:],
+                # user=url.username,
+                # password=url.password,
+                # host=url.hostname,
+                # port=url.port
+                # )
+                # cur = conn.cursor()
+                # todo enter into database the tip number, question, tip, categories
+                q = "INSERT INTO tip_submission VALUES (%s, '%s', '%s',ARRAY[%s], '%s');" % (tip_number, tip, question,categories, uni)
+                print("insert query:", q)
+                cur.execute(q)
+                conn.commit()
             except Exception as e:
                 print("crashed creating intent", e)
             print("tip submitted")
@@ -268,13 +288,9 @@ def submitTip(event):
                 #page.send("Tip added to new question")
             else:
                 print("Tip matched with another intent")
-                agent.intents.create('TIP#' + tip_number,None,[question],tip)
+                # agent.intents.create('TIP#' + tip_number,None,[question],tip)
                 page.send("Sorry, ADI already handles that question")
 
-        # todo enter into database the tip number, question, tip, categories
-        q = "INSERT INTO tip_submission VALUES (%s, '%s', '%s',ARRAY[%s], '%s');" % (tip_number, tip, question,categories, uni)
-        cur.execute(q)
-        conn.commit()
     except:
         page.send("uh-oh something went wrong!")
 
