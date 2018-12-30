@@ -1,102 +1,103 @@
-#flask libraries
-from flask import Flask, request, redirect, render_template, request, abort, Response, flash, send_file
+# flask libraries
+from flask import Flask, request, redirect, render_template, abort, Response, flash, send_file
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 from flask import session as sess
 from werkzeug.security import generate_password_hash, check_password_hash
 
-#NLP/context libraries
+# NLP/context libraries
 from api.ai import Agent
 
-#Bot libraries
+# Bot libraries
 from fbmq import Attachment, Template, QuickReply, NotificationType, fbmq
 
-#system libraries
+# system libraries
 import os
 
-#database related libraries 
+# database related libraries
 import psycopg2
 import urllib.parse
 import uuid
 
-#wellness libaries 
+# wellness libaries
 from packages.wellness.health import health_resources, health_concern_msg
 
-#dining 
+# dining
 from packages.dining.open_hall_finder import dininghallisOpen_msg
-#from dining.menu_scraper import dining_hall_menu_msg
+# from dining.menu_scraper import dining_hall_menu_msg
 from packages.dining.dining import dining_events_msg, dining_hall_food_request_msg, dining_hall_menu_msg
 
-#academic  
+# academic
 from packages.academic.library_hours import libraries_msg
 from packages.academic.academic_calendar import calendar_msg
 from packages.academic.printers import printers_msg
 
-#housing
-from packages.housing.cutv_channels import tv_network_msg 
+# housing
+from packages.housing.cutv_channels import tv_network_msg
 from packages.housing.laundry import open_machines_msg
 
-#offcampus
-from packages.offcampus.broadway import broadway_rush_msg 
+# offcampus
+from packages.offcampus.broadway import broadway_rush_msg
 from packages.offcampus.food_recommendations import offcampus_dining_request_msg, get_yelp_info
 from packages.offcampus.mta import mta_subway_info_msg
 from packages.offcampus.food_hours import offcampus_dining_hours_msg
 
-#clubs
+# clubs
 from packages.clubs.news import news_msg
 from packages.clubs.clubs import clubs_msg
 
-#etc
+# etc
 from packages.etc.memes import get_meme_msg
 from packages.etc.wisdomsearch import wisdom_search
 from packages.etc.weather import weather_msg
 
-#internal libraries
+# internal libraries
 from packages.internal.postbacks import intro_reply, health_reply, bot_menu, subscriptions_reply, current_features_msg
 
-#density
+# density
 from packages.density.density import density_msg
 
 MAX_MESSAGE_LENGTH = 640
 app = Flask(__name__)
 app.config.update(
-    SECRET_KEY= os.environ['SECRET_KEY']
+    SECRET_KEY=os.environ['SECRET_KEY']
 )
 
 agent = Agent(
-     'thecolumbialion',
-     os.environ['CLIENT_ACCESS_TOKEN'],
-     os.environ['DEVELOPER_ACCESS_TOKEN'],
+    'thecolumbialion',
+    os.environ['CLIENT_ACCESS_TOKEN'],
+    os.environ['DEVELOPER_ACCESS_TOKEN'],
 )
 
-page = fbmq.Page(os.environ['ACCESS_TOKEN'],api_ver="v2.11")
+page = fbmq.Page(os.environ['ACCESS_TOKEN'], api_ver="v2.11")
 page.greeting("Welcome to LionBot! Click below to learn more about what I can do.")
 page.show_starting_button("GET_STARTED")
-#THE DICT
-""" Dictionary of all module interface functions."""
+
+# Dictionary of all module interface functions.
 Msg_Fn_Dict = {
-        'clubs' : clubs_msg,
-        'printers':printers_msg,
-        'mta_subway_info':mta_subway_info_msg,
-        'campus_news_updates': news_msg,
-        'tv_network': tv_network_msg,
-        'libraries' : libraries_msg,
-        'dining_events' : dining_events_msg,
-        'dininghallisOpen' : dininghallisOpen_msg,
-        'offcampus_dining_request' : offcampus_dining_request_msg,
-        'offcampus_dining_hours' : offcampus_dining_hours_msg,
-        'broadway_rush' : broadway_rush_msg,
-        'calendar' : calendar_msg,
-        'dining_hall_menu' : dining_hall_menu_msg,
-        'dining_hall_food_request' : dining_hall_food_request_msg,
-        'weather': weather_msg,
-        'current_features': current_features_msg,
-        'health_concern': health_concern_msg,
-        'web.search': wisdom_search,
-        'meme' : get_meme_msg,
-        'laundry': open_machines_msg,
-        'density': density_msg}
+    'clubs': clubs_msg,
+    'printers': printers_msg,
+    'mta_subway_info': mta_subway_info_msg,
+    'campus_news_updates': news_msg,
+    'tv_network': tv_network_msg,
+    'libraries': libraries_msg,
+    'dining_events': dining_events_msg,
+    'dininghallisOpen': dininghallisOpen_msg,
+    'offcampus_dining_request': offcampus_dining_request_msg,
+    'offcampus_dining_hours': offcampus_dining_hours_msg,
+    'broadway_rush': broadway_rush_msg,
+    'calendar': calendar_msg,
+    'dining_hall_menu': dining_hall_menu_msg,
+    'dining_hall_food_request': dining_hall_food_request_msg,
+    'weather': weather_msg,
+    'current_features': current_features_msg,
+    'health_concern': health_concern_msg,
+    'web.search': wisdom_search,
+    'meme': get_meme_msg,
+    'laundry': open_machines_msg,
+    'density': density_msg}
 
 #################
+
 
 def chunkify(msg):
     """ Break message into chunks that are below Facebook's max character limit"""
@@ -117,22 +118,23 @@ def chunkify(msg):
         return ""
 
 
-def get_generic_or_msg(intent,result):
+def get_generic_or_msg(intent, result):
     """ The master method.  This method takes in the intent and the result dict structure
     and calls the proper interface method."""
-    #print("in get_generic_or_msg")
+    # print("in get_generic_or_msg")
     return Msg_Fn_Dict[intent](result)
 ###############################################
+
 
 urllib.parse.uses_netloc.append("postgres")
 url = urllib.parse.urlparse(os.environ['DATABASE_URL'])
 
 conn = psycopg2.connect(
-        database=url.path[1:],
-        user=url.username,
-        password=url.password,
-        host=url.hostname,
-        port=url.port
+    database=url.path[1:],
+    user=url.username,
+    password=url.password,
+    host=url.hostname,
+    port=url.port
     )
 cur = conn.cursor()
 
@@ -152,6 +154,7 @@ def show_persistent_menu():
                                Template.ButtonPostBack('Current Features', 'MENU_PAYLOAD/GET_STARTED'),
                                Template.ButtonPostBack('Health and Wellness', 'MENU_PAYLOAD/health')])
     return "Done with persistent menu section"
+
 
 @page.callback(['MENU_PAYLOAD/(.+)'])
 def click_persistent_menu(payload, event):
@@ -173,7 +176,8 @@ def click_persistent_menu(payload, event):
 
     return "done with persistent menu click"
 
-#TO-DO: add db query to insert userid to topic's column.
+
+# TO-DO: add db query to insert userid to topic's column.
 @page.callback(['Subscriptions/(.+)'])
 def handle_subscriptons(payload, event):
     click_menu = payload.split('/')[1]
@@ -199,10 +203,12 @@ def handle_subscriptons(payload, event):
 
     return "Done with handling subscription request"
 
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
     page.handle_webhook(request.get_data(as_text=True))
     return "finished"
+
 
 @page.handle_postback
 def received_postback(event):
@@ -226,11 +232,12 @@ def received_postback(event):
     elif payload == 'health':
         return "health done"
     elif payload == 'subscriptions':
-        
+
         return "subscriptions done"
     else:
         return "ERROR: Menu not found"
     return "postback done"
+
 
 @page.handle_message
 def message_handler(event):
@@ -283,7 +290,7 @@ def message_handler(event):
         return "Done handling attachments"
 
     if intent in Msg_Fn_Dict:
-        msg = get_generic_or_msg(intent,result)
+        msg = get_generic_or_msg(intent, result)
         print(type(msg))
         if type(msg) is list:
             print('sending as list')
@@ -312,13 +319,14 @@ def message_handler(event):
     elif defaultResponse != '':
         print('sending default response')
         print(page.send(recipient_id, defaultResponse))
-        
+
     else:
         error = "I didn't catch that. Ask me again?"
         page.send(recipient_id, error)
     cur.close()
     conn.close()
     page.typing_off(recipient_id)
+
 
 @page.handle_read
 def received_message_read(event):
@@ -338,6 +346,7 @@ def received_delivery_confirmation(event):
             pass
     return "delivery confirmed"
 
+
 @page.handle_echo
 def received_echo(event):
     message = event.message
@@ -345,6 +354,7 @@ def received_echo(event):
     app_id = message.get("app_id")
     metadata = message.get("metadata")
     return "Echo received done"
+
 
 @page.after_send
 def after_send(payload, response):
@@ -356,6 +366,7 @@ def callback_clicked_button(payload, event):
     recipient_id = event.sender_id
     page.send(recipient_id, health_resources(payload))
     return "health/welness callback done"
+
 
 if __name__ == "__main__":
     app.run()
