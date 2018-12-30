@@ -2,9 +2,9 @@ language: python
 python:
     - "3.6"
 before_install:
-	- python3 -m venv ~/lionbot
-	- cd bin
-	- source activate
-	- sudo brew install ngrok
+    - python3 -m venv ~/lionbot
+    - cd bin
+    - source activate
+    - sudo brew install ngrok
 install:
-	- pip3 install -r requirements.txt
+    - pip3 install -r requirements.txt
