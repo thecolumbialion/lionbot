@@ -5,7 +5,7 @@ import pyowm
 def weather_msg(result):
     try:
         response = currentweather(result)
-    except:
+    except BaseException:
         response = "I'm having trouble getting the weather. Try again?"
     return response
 
@@ -14,7 +14,7 @@ def currentweather(result):
     owm = pyowm.OWM(os.environ['WEATHER_API_KEY'])
     try:
         location = result['parameters']['address']['city']
-    except:
+    except BaseException:
         location = "New York, NY"
 
     try:
@@ -25,10 +25,12 @@ def currentweather(result):
         current_temp = temperature['temp']
         max_temp = temperature['temp_max']
         min_temp = temperature['temp_min']
-        response = "It is currently %s°F (high of %s°F and low of %s°F) in %s. The current weather is %s." % (current_temp, max_temp, min_temp, location, weather_detail)
+        response = "It is currently %s°F (high of %s°F and low of %s°F) in %s. The current weather is %s." % (
+            current_temp, max_temp, min_temp, location, weather_detail)
         return response
-    except:
-        response = "Looks like I couldn't get the weather in %s right now. Try again?" % (location)
+    except BaseException:
+        response = "Looks like I couldn't get the weather in %s right now. Try again?" % (
+            location)
         return response
 
     return 0

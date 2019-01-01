@@ -13,7 +13,8 @@ def get_printers():
         sys.exit(1)
 
     soup = BeautifulSoup(r.content)
-    locations = soup.find("div", id="text-3151").text + soup.find("div", id="text-3153").text
+    locations = soup.find("div", id="text-3151").text + \
+        soup.find("div", id="text-3153").text
     locations = locations.replace("\xa0", "").split("\n")
     locations = [x for x in locations if x != '' and x.find("PawPrint") == -1]
 

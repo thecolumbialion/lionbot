@@ -36,7 +36,7 @@ def find_open():
 def libraries_msg(result):
     try:
         open_lib = find_open()
-    except:
+    except BaseException:
         open_lib = []
     if len(open_lib) < 1:
         msg = "There are no libraries currently open"
@@ -44,7 +44,7 @@ def libraries_msg(result):
     msg = "Here's what libraries are open:\n"
     for library in open_lib:
         msg += library + "\n"
-    msg = msg[:len(msg)-1]
+    msg = msg[:len(msg) - 1]
     return msg
 
 

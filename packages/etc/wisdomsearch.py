@@ -13,7 +13,7 @@ def make_link(text):
 def wisdom_search(result):
     try:
         question = result['parameters']['q']
-    except:
+    except BaseException:
         msg = "I'm not sure what that is. Try again?"
     columbiafy_question = question
     google_link = make_link(columbiafy_question)

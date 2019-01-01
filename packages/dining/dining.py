@@ -9,7 +9,7 @@ def dining_events_msg(result):
     msg = ""
     try:
         events = getDiningEvents()
-    except:
+    except BaseException:
         events = []
     if events == []:
         msg = "Looks like there's no upcoming Dining Events. Check back later."
@@ -23,7 +23,7 @@ def dining_hall_food_request_msg(result):
     """Interface Function for food request intent"""
     try:
         food = result['parameters']['dining_hall_food'][0]
-    except:
+    except BaseException:
         error = "Could you ask that again? I don't know what food to check for"
         print("error sent")
         return error
@@ -36,7 +36,7 @@ def dining_hall_food_request_msg(result):
             halls = []
         else:
             halls = halls
-    except:
+    except BaseException:
         halls = []
     request_check = food_request(food, halls)
     if request_check:
@@ -45,7 +45,7 @@ def dining_hall_food_request_msg(result):
             # bot.send_text_message(recipient_id,key)
             for food in request_check[key]:
                 response += food + "\n"
-            response = response[:len(response)-1]
+            response = response[:len(response) - 1]
             return response
     else:
         msg1 = "Looks like %s is not available in the dining halls you asked me to check." % food
@@ -69,7 +69,10 @@ def getDiningEvents():
     res = []
 
     for i in range(num):
-        outStr = "Event: " + letters1[i].find("span", class_="field-content").get_text() + "\nTime: " + letters2[i].find("span", class_="date-display-single").get_text() + "\nLocation: " + letters3[i].find("span", class_="field-content").get_text() + "\n"
+        outStr = "Event: " + letters1[i].find("span",
+                                              class_="field-content").get_text() + "\nTime: " + letters2[i].find("span",
+                                                                                                                 class_="date-display-single").get_text() + "\nLocation: " + letters3[i].find("span",
+                                                                                                                                                                                              class_="field-content").get_text() + "\n"
         res.append(outStr)
     return res
 
@@ -79,7 +82,7 @@ def food_request(foodname, halls="all"):
     requested_food = foodname
     try:
         menus = get_menus()
-    except:
+    except BaseException:
         return {}
     relevant_hall_dict = {}
     if halls == "all":
@@ -101,7 +104,7 @@ def food_request(foodname, halls="all"):
                         if requested_food.lower() in food.lower():
                             matched_foods.append(food)
                             relevant_hall_dict[key] = matched_foods
-                except:
+                except BaseException:
                     continue
         return relevant_hall_dict
     return {}
@@ -116,7 +119,7 @@ def check_all_dining_halls(requested_food, menus, relevant_hall_dict):
                 if requested_food.lower() in food.lower():
                     matched_foods.append(food)
                     relevant_hall_dict[key] = matched_foods
-        except:
+        except BaseException:
             continue
     return relevant_hall_dict
 
@@ -160,7 +163,7 @@ def get_menus():
         hall = soup.find_all("li", class_="qtab-" + str(hall_id))
         try:
             hall_name = str(hall[0].a.get_text()).lstrip('u')
-        except:
+        except BaseException:
             hall_name = "None"
         food_elements = soup.find_all("span", class_="meal-title-calculator")
         foods = [str(elem.get_text()).lstrip('u') for elem in food_elements]
@@ -208,7 +211,8 @@ def get_barnard(arg):
 
     if len(menu) > 0:
         if arg == "Hewitt":
-            if now.strftime("%A") == "Sunday" or len(menu) < 3 or now.hour < 12:
+            if now.strftime("%A") == "Sunday" or len(
+                    menu) < 3 or now.hour < 12:
                 food = menu[0].text
             elif now.hour < 15:
                 food = menu[1].text
@@ -254,7 +258,7 @@ def dining_hall_menu_msg(result):
                 for item in menu:
                     menu_list += item + "\n"
                 return menu_list
-        except:
+        except BaseException:
             msg = "I can't currently find any information about %s." % hall
             return msg
     return "success"

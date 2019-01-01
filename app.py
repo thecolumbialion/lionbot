@@ -69,7 +69,8 @@ agent = Agent(
 )
 
 page = fbmq.Page(os.environ['ACCESS_TOKEN'], api_ver="v2.11")
-page.greeting("Welcome to LionBot! Click below to learn more about what I can do.")
+page.greeting(
+    "Welcome to LionBot! Click below to learn more about what I can do.")
 page.show_starting_button("GET_STARTED")
 
 # Dictionary of all module interface functions.
@@ -114,7 +115,7 @@ def chunkify(msg):
                 chunk = line
         chunks.append(chunk)
         return chunks
-    except:
+    except BaseException:
         return ""
 
 
@@ -135,14 +136,17 @@ conn = psycopg2.connect(
     password=url.password,
     host=url.hostname,
     port=url.port
-    )
+)
 cur = conn.cursor()
 
 
 @app.route('/webhook', methods=['GET'])
 def validate():
-    if request.args.get('hub.mode', '') == 'subscribe' and \
-                    request.args.get('hub.verify_token', '') == os.environ['VERIFY_TOKEN']:
+    if request.args.get(
+        'hub.mode',
+        '') == 'subscribe' and request.args.get(
+        'hub.verify_token',
+            '') == os.environ['VERIFY_TOKEN']:
         print("Validating webhook")
         return request.args.get('hub.challenge', '')
     else:
@@ -150,9 +154,17 @@ def validate():
 
 
 def show_persistent_menu():
-    page.show_persistent_menu([Template.ButtonPostBack('Subscriptions', 'MENU_PAYLOAD/subscriptions'),
-                               Template.ButtonPostBack('Current Features', 'MENU_PAYLOAD/GET_STARTED'),
-                               Template.ButtonPostBack('Health and Wellness', 'MENU_PAYLOAD/health')])
+    page.show_persistent_menu(
+        [
+            Template.ButtonPostBack(
+                'Subscriptions',
+                'MENU_PAYLOAD/subscriptions'),
+            Template.ButtonPostBack(
+                'Current Features',
+                'MENU_PAYLOAD/GET_STARTED'),
+            Template.ButtonPostBack(
+                'Health and Wellness',
+                'MENU_PAYLOAD/health')])
     return "Done with persistent menu section"
 
 
@@ -164,14 +176,28 @@ def click_persistent_menu(payload, event):
         page.send(recipient_id, intro_reply)
         return "done with get started"
     elif click_menu == 'health':
-        print(page.send(recipient_id, "What are you currently concerned about?", quick_replies=health_reply))
+        print(
+            page.send(
+                recipient_id,
+                "What are you currently concerned about?",
+                quick_replies=health_reply))
         return "done with health"
     elif click_menu == 'subscriptions':
-        print(page.send(recipient_id, """Welcome to Subscriptions, a new feature that allows you to get direct updates from campus clubs. To check which topics you're subscribed to, just ask 'What topics am I currently subscribed to?'"""))
-        print(page.send(recipient_id, "What topics do you want to subscribe to?", quick_replies=subscriptions_reply))
+        print(
+            page.send(
+                recipient_id,
+                """Welcome to Subscriptions, a new feature that allows you to get direct updates from campus clubs. To check which topics you're subscribed to, just ask 'What topics am I currently subscribed to?'"""))
+        print(
+            page.send(
+                recipient_id,
+                "What topics do you want to subscribe to?",
+                quick_replies=subscriptions_reply))
         return "done with subscriptions intro"
     else:
-        print("CLICK MENU WAS " + click_menu + " and it failed to find the right payload")
+        print(
+            "CLICK MENU WAS " +
+            click_menu +
+            " and it failed to find the right payload")
         return "done"
 
     return "done with persistent menu click"
@@ -194,11 +220,12 @@ def handle_subscriptons(payload, event):
     )
     cur = conn.cursor()
     try:
-        subscription_query = "UPDATE subscription SET messenger_id_list = array_append(messenger_id_list, '%s') WHERE category = '%s'" % (recipient_id, click_menu)
+        subscription_query = "UPDATE subscription SET messenger_id_list = array_append(messenger_id_list, '%s') WHERE category = '%s'" % (
+            recipient_id, click_menu)
         print(subscription_query)
         cur.execute(subscription_query)
         conn.commit()
-    except:
+    except BaseException:
         print("ERROR: Updating database (subscription) failed.")
 
     return "Done with handling subscription request"
@@ -218,15 +245,19 @@ def received_postback(event):
     payload = event.postback.payload
     try:
         payload = payload.split('/')[1]
-    except:
+    except BaseException:
         payload = payload
     if payload == 'GET_STARTED':
         try:
             user_profile = page.get_user_profile(recipient_id)
             first_name = str(user_profile["first_name"])
-        except:
+        except BaseException:
             first_name = ""
-        print(page.send(recipient_id, "Hi, %s. Welcome to LionBot! Here's some of the things I can do." % (first_name)))
+        print(
+            page.send(
+                recipient_id,
+                "Hi, %s. Welcome to LionBot! Here's some of the things I can do." %
+                (first_name)))
         print(page.send(recipient_id, intro_reply))
 
     elif payload == 'health':
@@ -255,11 +286,12 @@ def message_handler(event):
         result = response['result']
         intent = result['metadata'].get('intentName', None)
         defaultResponse = result['fulfillment']['speech']
-    except:
+    except BaseException:
         first_name, last_name, intent = ("", "", "")
 
     try:
-        q = "INSERT INTO All_user_messages VALUES (%s,%s,%s,%s,%s,%s)" % (unique_id, user_id, last_name, first_name, intent, message)
+        q = "INSERT INTO All_user_messages VALUES (%s,%s,%s,%s,%s,%s)" % (
+            unique_id, user_id, last_name, first_name, intent, message)
         cur.execute(q)
         conn.commit()
     except psycopg2.Error as pe:
@@ -281,10 +313,14 @@ def message_handler(event):
         if attachment_type == "location":
             latitude = message_attachments[0]['payload']['coordinates']['lat']
             longitude = message_attachments[0]['payload']['coordinates']['long']
-            response = offcampus_dining_request_msg(result, latitude, longitude)
+            response = offcampus_dining_request_msg(
+                result, latitude, longitude)
             print(page.send(recipient_id, response))
         else:
-            print(page.send(recipient_id, "Here's a handpicked meme by Rafael Ortiz of Columbia buy/sell memes fame."))
+            print(
+                page.send(
+                    recipient_id,
+                    "Here's a handpicked meme by Rafael Ortiz of Columbia buy/sell memes fame."))
             meme = get_meme_msg(result)
             print(page.send(recipient_id, meme))
         return "Done handling attachments"
@@ -292,16 +328,16 @@ def message_handler(event):
     if intent in Msg_Fn_Dict:
         msg = get_generic_or_msg(intent, result)
         print(type(msg))
-        if type(msg) is list:
+        if isinstance(msg, list):
             print('sending as list')
             print(page.send(recipient_id, msg))
-        if type(msg) is str:
+        if isinstance(msg, str):
             print('sending as str')
             try:
                 chunks = chunkify(msg)
                 for chunk in chunks:
                     print(page.send(recipient_id, chunk))
-            except:
+            except BaseException:
                 return ""
         else:
             print('sending as other')
@@ -361,7 +397,15 @@ def after_send(payload, response):
     return "after send done"
 
 
-@page.callback(['stress', 'alcohol', 'wellness', 'depression', 'LGBT', 'eating-disorders', 'suicide', 'sleep', 'sexual-assault'])
+@page.callback(['stress',
+                'alcohol',
+                'wellness',
+                'depression',
+                'LGBT',
+                'eating-disorders',
+                'suicide',
+                'sleep',
+                'sexual-assault'])
 def callback_clicked_button(payload, event):
     recipient_id = event.sender_id
     page.send(recipient_id, health_resources(payload))

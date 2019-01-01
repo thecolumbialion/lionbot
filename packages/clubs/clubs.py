@@ -4,7 +4,7 @@ import pickle
 def clubs_msg(result):
     try:
         club = result['parameters']['club']
-    except:
+    except BaseException:
         club = "The Lion"
     return find_clubs(club)
 

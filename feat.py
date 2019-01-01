@@ -16,11 +16,19 @@ def get_days():
     for i in range(5):
         day = date.strftime("%A").lower()
         daymon = date.strftime("%m") + date.strftime("%d")
-        week_num = str(int(date.strftime("%U"))-1)  # dining uses school weeks
+        # dining uses school weeks
+        week_num = str(int(date.strftime("%U")) - 1)
         for time in times:
             for hall in halls:
-                links.append("http://dining.columbia.edu/" + daymon +
-                             "week-" + nums[week_num] + day + time + "-" + hall)
+                links.append(
+                    "http://dining.columbia.edu/" +
+                    daymon +
+                    "week-" +
+                    nums[week_num] +
+                    day +
+                    time +
+                    "-" +
+                    hall)
         date += datetime.timedelta(days=1)
     return links
 
@@ -37,7 +45,8 @@ def get_food(food):
         for meal in meals:
             if food in meal.text.lower():
                 hall = soup.findAll("h2", limit=1)
-                when = soup.findAll(class_="field field-type-datetime field-field-menu-date", limit=1)
+                when = soup.findAll(
+                    class_="field field-type-datetime field-field-menu-date", limit=1)
                 print(hall[0].text + "\n" + when[0].text)
 
 

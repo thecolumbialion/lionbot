@@ -39,7 +39,7 @@ def get_menus():
         hall = soup.find_all("li", class_="qtab-" + str(hall_id))
         try:
             hall_name = str(hall[0].a.get_text()).lstrip('u')
-        except:
+        except BaseException:
             hall_name = "None"
         food_elements = soup.find_all("span", class_="meal-title-calculator")
         foods = [str(elem.get_text()).lstrip('u') for elem in food_elements]
@@ -72,7 +72,8 @@ def get_barnard(arg):
     # r = urllib.request.urlopen('https://barnard.edu/dining/menu/' + arg).read()
     # soup = BeautifulSoup(r, "html.parser")
 
-    # get three collections of tag objects for events, dates, locations respectively
+    # get three collections of tag objects for events, dates, locations
+    # respectively
     menu = soup.find_all("p", style="white-space: pre-wrap;")
 
     now = datetime.datetime.now()
@@ -82,7 +83,8 @@ def get_barnard(arg):
 
     if len(menu) > 0:
         if arg == "Hewitt":
-            if now.strftime("%A") == "Sunday" or len(menu) < 3 or now.hour < 12:
+            if now.strftime("%A") == "Sunday" or len(
+                    menu) < 3 or now.hour < 12:
                 food = menu[0].text
             elif now.hour < 15:
                 food = menu[1].text
@@ -133,7 +135,7 @@ def dining_hall_menu_msg(result):
                     menu_list += item + "\n"
                 return menu_list
                 # print(str(a))
-        except:
+        except BaseException:
             msg = "Looks like I can't currently find any information about %s." % hall
             return msg
     return "success"
