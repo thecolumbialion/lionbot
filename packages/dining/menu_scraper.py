@@ -1,40 +1,36 @@
-from bs4 import BeautifulSoup
-import urllib.request, urllib.parse, urllib.error
 import datetime
 import requests
-""" Given a URL, returns a BeautifulSoup object for that page
-"""
+from bs4 import BeautifulSoup
 
 
 def get_soup(url):
-    #raw_page = urllib.request.urlopen(url).read()
-    #soup = BeautifulSoup(raw_page, "html.parser")
+    """ Given a URL, returns a BeautifulSoup object for that page
+    """
+    # raw_page = urllib.request.urlopen(url).read()
+    # soup = BeautifulSoup(raw_page, "html.parser")
     raw_page = requests.get(url)
     soup = BeautifulSoup(raw_page.text, "lxml")
     return soup
 
 
-""" Builds the URL for the menu of a specific dining hall
-"""
-
-
 def get_hall_url(hall_id):
+    """ Builds the URL for the menu of a specific dining hall
+    """
     url = 'http://dining.columbia.edu/?quicktabs_homepage_menus_quicktabs='
     url = url + str(hall_id)
     url = url + '#quicktabs-homepage_menus_quicktabs'
     return url
 
 
-""" Returns a dictionary where the keys are the names of each dining hall with
-    menu on dining.columbia.edu and the value for each key is a list of the
-    menu items for that dining hall.
-
-    Some logic borrowed from:
-    https://github.com/samlouiscohen/starting/blob/master/sortedFood_crawler.py
-"""
-
-
 def get_menus():
+    """ Some logic borrowed from:
+    https://github.com/samlouiscohen/starting/blob/master/sortedFood_crawler.py
+
+    Return:
+        dict: dictionary where the keys are the names of each dining hall with
+              menu on dining.columbia.edu and the value for each key is a
+              list of the menu items for that dining hall.
+    """
     menus = {}
 
     for hall_id in range(3):
@@ -55,11 +51,9 @@ def get_menus():
     return menus
 
 
-""" This prints out the menus of each dining hall to the terminal
-"""
-
-
 def print_menus(menus):
+    """ Prints out the menus of each dining hall to the terminal
+    """
     for hall in menus:
         print("\n\nDINING HALL: " + hall)
         menu = menus[hall]
@@ -68,18 +62,15 @@ def print_menus(menus):
             print("\n" + food)
 
 
-"""
-gets the barnard food
-PS: the food is not seperated in a list, it is just a string
-get food not available for barnard
-"""
-
-
 def get_barnard(arg):
+    """ Gets the barnard food
+    PS: the food is not seperated in a list, it is just a string
+    get food not available for barnard
+    """
     r = requests.get('https://barnard.edu/dining/menu/' + arg)
     soup = BeautifulSoup(r.text, "lxml")
-    #r = urllib.request.urlopen('https://barnard.edu/dining/menu/' + arg).read()
-    #soup = BeautifulSoup(r, "html.parser")
+    # r = urllib.request.urlopen('https://barnard.edu/dining/menu/' + arg).read()
+    # soup = BeautifulSoup(r, "html.parser")
 
     # get three collections of tag objects for events, dates, locations respectively
     menu = soup.find_all("p", style="white-space: pre-wrap;")
@@ -111,15 +102,15 @@ def get_barnard(arg):
         liist.append('error')
     return liist
 
-""" This opens 'http://dining.columbia.edu/menus' and prints out the foods on
-    the menu of the currently selected dining hall. Because this changes, we'll
-    need to click on each dining hall and have the bot collect all the info.
-"""
 
 def dining_hall_menu_msg(result):
-    """Interface function"""
-    #max_message_length = 640
-    #print("in dining halls")
+    """ This opens 'http://dining.columbia.edu/menus' and prints
+    out the foods on the menu of the currently selected dining hall.
+    Because this changes, we'll need to click on each dining hall
+    and have the bot collect all the info.
+    """
+    # max_message_length = 640
+    # print("in dining halls")
     menus = get_menus()
     halls = result['parameters']['dining_halls']
     if len(halls) < 1:
@@ -128,7 +119,7 @@ def dining_hall_menu_msg(result):
     for hall in halls:
         if hall == "dining hall":
             mistake = "Can you ask me that again? I don't know which dining hall to check."
-            return mistake;
+            return mistake
         try:
             menu = menus[hall]
             if len(menu) < 1:
@@ -137,22 +128,21 @@ def dining_hall_menu_msg(result):
             else:
                 menu_list = "Here's what's available at %s right now:\n" % hall
                 for item in menu:
-                    #print(item)
-                    #print("here is the item:" + str(item))
+                    # print(item)
+                    # print("here is the item:" + str(item))
                     menu_list += item + "\n"
                 return menu_list
-                #print(str(a))
+                # print(str(a))
         except:
             msg = "Looks like I can't currently find any information about %s." % hall
             return msg
     return "success"
 
 
-
 def main():
     menus = get_menus()
     print(menus)
 
+
 if __name__ == '__main__':
     main()
-
