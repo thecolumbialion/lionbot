@@ -1,18 +1,14 @@
 """Finds all the dining halls that are currently open.
 """
-
-from bs4 import BeautifulSoup
-import urllib
 import sys
 import datetime
-import time
-import os
 import requests
+from bs4 import BeautifulSoup
 
-""" Returns a list of the dining halls on Columbia's dining website of all the currently open halls
-"""
 
 def find_open():
+    """ Returns a list of the dining halls on Columbia's dining website of all the currently open halls
+    """
     file = requests.get('http://dining.columbia.edu/')
     soup = BeautifulSoup(file.content, "html.parser")
     halls = {}
@@ -20,8 +16,8 @@ def find_open():
     halls = open_hall[6].find_all("li")
     hall_name_text = []
     for hall in halls:
-        hallname = hall.get_text()#.encode('utf-8')
-        #print(hallname)
+        hallname = hall.get_text()  # .encode('utf-8')
+        # print(hallname)
         hall_name_text.append(hallname)
         # print(hall_name_text)
 
@@ -32,32 +28,34 @@ def find_open():
     hour = int(now.hour)
     # diana
 
-    cond1 = 0 < day < 6 and 9  < hour < 15
+    cond1 = 0 < day < 6 and 9 < hour < 15
     cond2 = 0 < day < 5 and 17 < hour < 20
     cond3 = day < 5 and 20 < hour < 23
     if cond1 or cond2 or cond3:
         hall_name_text.append("Diana")
     # hewitt
     cond4 = day < 6 and 8 < hour < 17
-    cond5 = day%6 == 0 and 10 < hour < 15
+    cond5 = day % 6 == 0 and 10 < hour < 15
     cond6 = day < 6 and 17 < hour < 20
     cond7 = day == 6 and 17 < hour < 19
     if cond4 or cond5 or cond6 or cond7:
         hall_name_text.append("Hewitt")
-    #print(hall_name_text)
+    # print(hall_name_text)
     return hall_name_text
 
-""" Prints the open dining halls to terminal. Gets rid of <li> tags
-"""
+
 def printhalls(halls):
+    """ Prints the open dining halls to terminal. Gets rid of <li> tags
+    """
     for hall in halls:
-        hallname = hall.get_text()#.encode('utf-8')
+        hallname = hall.get_text()  # .encode('utf-8')
         print("\n\nDINING HALL: " + hallname)
+
 
 def isOpen(args):
     if len(args) < 2:
         halls = find_open()
-        if halls is None: 
+        if halls is None:
             response = "Could you try that again? I don't know what dining hall to check."
             return response
         elif len(halls) >= 1:
@@ -88,10 +86,12 @@ def isOpen(args):
         response = "Unfortunately, %s is closed." % dining_hall
         return response
 
+
 def dininghallisOpen_msg(result):
     halls = result['parameters']['dining_halls']
     msg = isOpen(halls)
     return msg
+
 
 if __name__ == '__main__':
     isOpen(sys.argv)

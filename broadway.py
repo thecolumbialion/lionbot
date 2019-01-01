@@ -20,5 +20,5 @@ def get_shows():
 def get_shows_message():
     try:
         shows = get_shows()
-    except:
+    except BaseException:
         shows = "No shows available. Try again later"

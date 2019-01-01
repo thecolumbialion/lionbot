@@ -48,7 +48,7 @@ def get_current_yearnum(termnum=None):
     """
     Returns number corresponding to current Ac. year in url param
     """
-    if termnum == None:
+    if termnum is None:
         termnum = get_current_termnum()
     return get_yearnum(termnum, dt.date.today().year)
 
@@ -80,7 +80,9 @@ def get_cal_soup(url="http://registrar.columbia.edu/event/academic-calendar"):
     """
     cal_page = requests.get(url)
     page_soup = bs4.BeautifulSoup(cal_page.text, "html.parser")
-    cal_soup = page_soup.select("#block-system-main > div > div > div.view-content")[0]  # Exact selector: #block-system-main > div > div > div.view-content
+    # Exact selector: #block-system-main > div > div > div.view-content
+    cal_soup = page_soup.select(
+        "#block-system-main > div > div > div.view-content")[0]
     return cal_soup
 
 # block-system-main div.view-content
@@ -107,10 +109,11 @@ EVENTDES = "field-type-text-with-summary"
 def get_events(search, url):
     soup = get_cal_soup(url)
     # search = "Holiday" #input("Event? ")
-    eventnamesdes = soup.find_all((lambda x:
-                                   x.get('class') and
-                                   (CEVENT in x.get('class') or EVENTDES in x.get('class')) and
-                                   searchfor(search2array(search), x.get_text().lower())))
+    eventnamesdes = soup.find_all(
+        (lambda x: x.get('class') and (
+            CEVENT in x.get('class') or EVENTDES in x.get('class')) and searchfor(
+            search2array(search),
+            x.get_text().lower())))
     eventnames = []
     for x in eventnamesdes:
         if EVENTDES in x.get('class'):
@@ -118,7 +121,8 @@ def get_events(search, url):
         else:
             eventnames.append(x)
 
-    events = {x.get_text().strip(): x.find_previous_sibling(class_=CDATE).get_text() for x in eventnames}
+    events = {x.get_text().strip(): x.find_previous_sibling(
+        class_=CDATE).get_text() for x in eventnames}
     return events
 
 
@@ -140,7 +144,8 @@ def cal_message(event, school, term, year):
     url = get_cal_url(params)
     events = get_events(event, url)
     message = "\n".join([k + " is on " + v + "." for k, v in events.items()])
-    message += "\n\nI found this information at " + url + " (please double check my results for important dates.)"
+    message += "\n\nI found this information at " + url + \
+        " (please double check my results for important dates.)"
     return message
 
 
@@ -162,7 +167,7 @@ def calendar_msg(result):
     calevent = result['parameters']['cal_event']
     try:
         msg = cal_message(calevent, calschool, calterm, calyear)
-    except:
+    except BaseException:
         msg = "Looks like I couldn't find that. Try that again?"
 
     return msg

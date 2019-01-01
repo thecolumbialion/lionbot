@@ -25,7 +25,7 @@ def get_urls():
         soup = bs(html, "lxml")
 
         for a in soup.find_all('a', href=True):
-            if str(SEMESTER+YEAR) in a:
+            if str(SEMESTER + YEAR) in a:
                 html_suburls.append(a['href'])
 
     suburls = ["http://www.columbia.edu" + item for item in html_suburls]
