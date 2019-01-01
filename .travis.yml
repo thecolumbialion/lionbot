@@ -7,4 +7,5 @@ install:
   - pip3 install -r requirements.txt
 
 script: 
-  - python3 testsuite.py | xargs pylint
+  - python3 testsuite.py
+  - find . -iname "*.py" | xargs pylint
