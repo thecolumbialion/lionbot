@@ -1,9 +1,5 @@
-import os
-import sys
 import datetime
-from fbmq import Template, QuickReply, ButtonPostBack
 import requests
-import json
 
 
 def offcampus_dining_hours_msg(result):
@@ -20,18 +16,19 @@ def offcampus_dining_hours_msg(result):
 
 
 def get_hours(term):
-    # set latittude and longitude to CU
+    """ set latittude and longitude to CU """
     search_results = query_yelp_search(term, 40.806209, -73.961733, 1)
     biz_id = parse_search(search_results)
     biz_results = query_yelp_lookup(biz_id)
     return get_today_hours(biz_results)
 
-# search for resturant
-
 
 def query_yelp_search(term, latitude, longitude, query_limit):
-    headers = {'Authorization': 'Bearer ' +
-               'w5JFtwCUKq05GlSpm8cKo51dBYDQ6r9tyzo-qRsKt4wDyB5_ro6gW5gnG9hS6bvnNHNxOQLHfw7o_9S1e86nkvgcU7DQI_sM6GVt9rqcq_rRYKtagQrexuH0zsU0WXYx'}
+    """ Searches Yelp for a restaurant """
+    headers = {'Authorization': ('Bearer '
+               'w5JFtwCUKq05GlSpm8cKo51dBYDQ6r9tyzo-qRsKt4wDyB5_'
+               'ro6gW5gnG9hS6bvnNHNxOQLHfw7o_9S1e86nkvgcU7DQI_sM'
+               '6GVt9rqcq_rRYKtagQrexuH0zsU0WXYx')}
     params = {
         'term': term,
         'latitude': latitude,
@@ -56,12 +53,13 @@ def parse_search(results):
     biz_id = results['businesses'][0]['id']
     return biz_id
 
-# lookup resturant using id
-
 
 def query_yelp_lookup(biz_id):
-    headers = {'Authorization': 'Bearer ' +
-               'w5JFtwCUKq05GlSpm8cKo51dBYDQ6r9tyzo-qRsKt4wDyB5_ro6gW5gnG9hS6bvnNHNxOQLHfw7o_9S1e86nkvgcU7DQI_sM6GVt9rqcq_rRYKtagQrexuH0zsU0WXYx'}
+    """ Lookup resturant using id """
+    headers = {'Authorization': ('Bearer '
+               'w5JFtwCUKq05GlSpm8cKo51dBYDQ6r9tyzo-qRsKt4wDyB5'
+               '_ro6gW5gnG9hS6bvnNHNxOQLHfw7o_9S1e86nkvgcU7DQI_'
+               'sM6GVt9rqcq_rRYKtagQrexuH0zsU0WXYx')}
     url = 'https://api.yelp.com/v3/businesses/' + biz_id
     query = requests.get(url, headers=headers)
     return query.json()

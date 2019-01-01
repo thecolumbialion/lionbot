@@ -17,7 +17,9 @@ def wisdom_search(result):
         msg = "I'm not sure what that is. Try again?"
     columbiafy_question = question
     google_link = make_link(columbiafy_question)
-    msg = "I don't think I have a great answer for that (yet). In the meantime, let me refer you to a close friend for help: " + google_link
+    msg = ("I don't think I have a great answer for that (yet). In the "
+           "meantime, let me refer you to a close friend for "
+           "help: ") + google_link
     return msg
 
 
@@ -35,9 +37,13 @@ class BotSearch:
         if intent == "wisdom_search":
             columbiafy_question = question + "columbia university"
             google_link = make_link(columbiafy_question)
-            msg = "I don't think I have a great answer for that (yet). In the meantime, let me refer you to a close friend for help: " + google_link
+            msg = ("I don't think I have a great answer for that (yet). In "
+                   "the meantime, let me refer you to a close friend for "
+                   "help: ") + google_link
             return msg
         google_link = make_link(question)
-        msg = "I don't think I have a great answer for that (yet). In the meantime, let me refer you to a close friend for help: " + google_link
+        msg = ("I don't think I have a great answer for that (yet). In the "
+               "meantime, let me refer you to a close friend for "
+               "help: ") + google_link
         # bot.send_text_message(recipient_id, msg)
         return msg
