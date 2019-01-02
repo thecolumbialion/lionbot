@@ -46,22 +46,19 @@ def get_food(food):
             if food in meal.text.lower():
                 hall = soup.findAll("h2", limit=1)
                 when = soup.findAll(
-                    class_="field field-type-datetime field-field-menu-date", limit=1)
+                    class_="field field-type-datetime field-field-menu-date",
+                    limit=1)
                 print(hall[0].text + "\n" + when[0].text)
 
 
 get_food("egg")
 
 
-"""
 def get_items(food):
     load = {'food':food}
     r = requests.post('http://dining.columbia.edu/menus/mood-search',
             data=load)
 
-    #soup = BeautifulSoup(r.content, "html.parser")
-    #result = soup.findAll("div", id="mood-wrapper")
+    # soup = BeautifulSoup(r.content, "html.parser")
+    # result = soup.findAll("div", id="mood-wrapper")
     print(r.text)
-
-get_items("eggs")
-"""
