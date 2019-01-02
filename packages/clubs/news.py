@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 import feedparser
-from fbmq import Template, QuickReply, ButtonPostBack
+from fbmq import Template
 
 
 def news_msg(result):
@@ -23,7 +23,8 @@ def news_msg(result):
         news_result = make_lion_feed()
     # if no results returned
     if news_result == []:
-        news_result = "I couldn't get any news updates from the publication requested."
+        news_result = ("I couldn't get any news "
+                       "updates from the publication requested.")
     response = Template.List(elements=news_result, top_element_style='large')
     return response
 
@@ -37,7 +38,8 @@ def make_lion_feed():
         if lion_counter > 4:
             break
         else:
-            image = "http://columbialion.com/wp-content/uploads/2015/08/4468318_10157368552385198_1896799578837951965_o.png"
+            image = ("http://columbialion.com/wp-content/uploads/2015/08/"
+                     "4468318_10157368552385198_1896799578837951965_o.png")
             news_item = Template.GenericElement(
                 title=feed['title'],
                 subtitle=feed['description'],
@@ -93,7 +95,10 @@ def make_spec_feed():
         article_names = test_names[line].findAll(
             "div", {"class": "story-title"})
         article_image = image_links[line].findAll(
-            "div", {"class": "col-xs-12 col-md-4"})[0].findAll("div", {"class": "image-container"})[0]
+            "div",
+            {"class": "col-xs-12 col-md-4"})[0].findAll("div",
+                                                        {"class":
+                                                        "image-container"})[0]
         image_link = article_image.findAll('img', src=True)[0]
         actual_image = image_link['src']
         article_link = article_names[0].findAll('a', href=True)

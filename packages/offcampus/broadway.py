@@ -17,12 +17,12 @@ def get_shows():
         theater = row_start[2].text
         close_date = row_start[4].text
         performance_schedule = row_start[5].text
-        if(len(row_start) > 6):
+        if len(row_start) > 6:
             rush_policy = row_start[6].text
             g = row_start[6]
             rush_link_html = g.find_all('a')
             rush_link = list(rush_link_html)
-            if len(rush_link) > 0:
+            if rush_link:
                 rush_link = make_rush_link(rush_link)
             else:
                 rush_link = "%s does not have a rush policy yet." % (show)
@@ -44,7 +44,8 @@ def get_shows():
 
 def make_rush_link(rush_link):
     javascript_line = rush_link[0]['href']
-    # javascript_line looks like this: javascript:popupWindow('tgcdetail.html',500,400,100,100,100,100)
+    # javascript_line looks like this:
+    # javascript:popupWindow('tgcdetail.html',500,400,100,100,100,100)
     # start will get us to first character of show.html link
     start = javascript_line.index('(') + 2
     # get index of last character of show.html link
@@ -75,18 +76,20 @@ def search_show(show_name, desired_info=['rush_policy']):
     # don't give full show title)
     check_shows = []
     statement = ""
-    if len(show_name) == 0:
-        result = "I'd be happy to help you get some rush tickets. Could you ask me about a specific show though? (ex. 'How do I rush Hamilton?')"
+    if not show_name:
+        result = ("I'd be happy to help you get some rush tickets. "
+                  "Could you ask me about a specific show though? "
+                  "(ex. 'How do I rush Hamilton?')")
         return result
         #bot.send_text_message(recipient_id, result)
-    if len(desired_info) == 0:
+    if not desired_info:
         found_shows = []
         try:
             for key in shows.keys():
                 if show_name.lower() in key.lower():
                     found_shows.append(key)
-            if len(found_shows) == 0:
-                message = "Looks like %s is not currently a show on Broadway." % (
+            if not found_shows:
+                message = "Sorry, %s is not currently a show on Broadway." % (
                     show_name)
                 return message
                 #bot.send_text_message(recipient_id, message)
@@ -100,12 +103,14 @@ def search_show(show_name, desired_info=['rush_policy']):
                     #bot.send_text_message(recipient_id, statement)
                 except BaseException:
 
-                    result = "Looks like I couldn't find out more about %s for you." % (
-                        value)
+                    result = ("Looks like I couldn't find "
+                              "out more about %s for you.") % (
+                              value)
                     #bot.send_text_message(recipient_id, result)
                     return result
         except BaseException:
-            message = "What information do you want about the show? I don't know what to check."
+            message = ("What information do you want about the show?"
+                       " I don't know what to check.")
             #bot.send_text_message(recipient_id, message)
             return message
     for key in shows.keys():
@@ -113,7 +118,7 @@ def search_show(show_name, desired_info=['rush_policy']):
         #print(show_name.lower() == key.lower())
         if show_name.lower() in key.lower():
             check_shows.append(key)
-    if len(check_shows) == 0:
+    if not check_shows:
         message = "Looks like %s is not currently a show on Broadway." % (
             show_name)
         # print(message)

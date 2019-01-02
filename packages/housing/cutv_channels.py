@@ -9,9 +9,9 @@ def get_networks():
         dict: a dictionary of current channel listings
     """
     channels_dict = {}
-    input = open('./packages/housing/channels.txt', 'r')
+    channels = open('./packages/housing/channels.txt', 'r')
     channel_num = ""
-    for index, line in enumerate(input):
+    for index, line in enumerate(channels):
         stripped_line = re.sub('<[^<]+?>', '', line)
         if index % 2 == 0:
             channel_num = stripped_line.rstrip('\n')
@@ -32,12 +32,11 @@ def find_network(network):
             channel_num = channels_dict[channel_listing]
             channel_result = channel_listing + ": " + channel_num
             results.append(channel_result)
-    if len(results) == 0:
-        msg = "Looks like I couldn't find any information about that TV channel."
+    if not results:
+        msg = "Sorry, I couldn't find any information about that TV channel."
         return msg
-    else:
-        for line in results:
-            response += line + "\n"
+    for line in results:
+        response += line + "\n"
     response = response.rstrip()
     return response
 
