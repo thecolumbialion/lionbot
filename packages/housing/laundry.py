@@ -8,7 +8,8 @@ def open_machines_msg(args):
         response = open_machines(args)
         return response
     except BaseException:
-        response = "Looks like I couldn't find the laundry information requested."
+        response = ("Looks like I couldn't find "
+                    "the laundry information requested.")
         return response
 
 
@@ -22,10 +23,12 @@ def get_laundry_dict():
     laundry_dict = {}
     for count, room in enumerate(rooms):
         laundry_dict[re.split("\\s\\s+",
-                              str(room))[1]] = {"washers": re.findall(r'\d+',
-                                                                      avail[count].get_text())[0],
-                                                "dryers": re.findall(r'\d+',
-                                                                     avail[count].get_text())[1]}
+                              str(room))[1]] = {"washers":
+                                                re.findall(r'\d+',
+                                                avail[count].get_text())[0],
+                                                "dryers":
+                                                re.findall(r'\d+',
+                                                avail[count].get_text())[1]}
     return laundry_dict
 
 
@@ -33,7 +36,8 @@ def open_machines(args):
     laundry_dict = get_laundry_dict()
     # print(args["parameters"]["machine_type"])
     if laundry_dict is None:
-        response = "Sorry, either Laundry View is down or Columbia no longer has laundry machines."
+        response = ("Sorry, either Laundry View is down or "
+                    "Columbia no longer has laundry machines.")
     else:
         if args["parameters"]["hall_residence"] == "WATT":
             hall = "WATT "

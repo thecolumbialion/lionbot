@@ -11,7 +11,8 @@ def clubs_msg(result):
 
 def make_club_dict():
     """
-    Store both club name and its acronym as key, and the club info as value into the file club_dict
+    Store both club name and its acronym as key, and the
+    club info as value into the file club_dict
 
     """
     club_dict = {}
@@ -56,29 +57,4 @@ def find_clubs(club):
         if club in club_name_lower:
             club_result = club_name + ": " + clubs_dict[club_name]
             results.append(club_result)
-
-    """
-
-    - Modification: now find_clubs returns a list of strings instead of a single string
-    - If the list is empty: no result is found
-    - If the list has multiple entries: any one of them
-      might be the club the user is looking for. In that
-      case, the bot should handle the logic to check with
-      the users which club is the one they want.
-
-
-    """
-
     return results
-
-    """
-    if len(results) == 0:
-        msg = "Looks like I couldn't find any information about that club."
-        return msg
-
-    else:
-        for line in results:
-            response += line + "\n"
-    response = response.rstrip()
-    return response
-    """

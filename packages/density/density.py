@@ -1,8 +1,6 @@
-import json
-import requests
 import os
-import sys
 import heapq
+import requests
 
 auth_key = os.environ['DENSITY_API_KEY']
 types_of_places = {
@@ -33,15 +31,14 @@ def density_msg(result):
     return parse_json(response, location)
 
 
-"""
-Returns a list of locations based on what the user is asking for
-:param response: (String) Density API call result
-:param location: (String) String representation of the location the user is asking about.
-:return: (String) Formatted results showing % full for location
-"""
-
-
 def parse_json(response, location):
+    """
+    Returns a list of locations based on what the user is asking for
+    :param response: (String) Density API call result
+    :param location: (String) String representation of the location
+                              the user is asking about.
+    :return: (String) Formatted results showing % full for location
+    """
     json_response = response.json()
     building_parameter = 'building_name'
     floor_parameter = 'group_name'
@@ -51,7 +48,7 @@ def parse_json(response, location):
     buildings_comparison_number = 5
     m_heap = []
 
-    if location == 'study' or location == 'eat':
+    if location in ('study', 'eat'):
         for place in json_response['data']:
             if place[building_parameter] in types_of_places[location]:
                 heapq.heappush(
@@ -76,14 +73,12 @@ def parse_json(response, location):
     return list_to_str(result_list)
 
 
-"""
-Formats a list into a string.
-:param list_name: (List of String) List to be formatted
-:return: (String) String representation of list
-"""
-
-
 def list_to_str(list_name):
+    """
+    Formats a list into a string.
+    :param list_name: (List of String) List to be formatted
+    :return: (String) String representation of list
+    """
     final_str = ''
     for string in list_name:
         final_str += string + '\n'
@@ -102,25 +97,24 @@ def match_percentage(place, building_parameter, floor_parameter, location):
     return ratio
 
 
-"""
-Creates a coefficient that shows how similar two strings are based on bigrams
-:param a: (String) String 1
-:param b: (String) String 2
-:return: (float) percentage match
-"""
-
-
 def dice_coefficient(a, b):
+    """
+    Creates a coefficient that shows how similar
+        two strings are based on bigrams
+    :param a: (String) String 1
+    :param b: (String) String 2
+    :return: (float) percentage match
+    """
     if not len(a) or not len(b):
         return 0.0
-    """ quick case for true duplicates """
+    # quick case for true duplicates
     if a == b:
         return 1.0
-    """ if a != b, and a or b are single chars, then they can't possibly match """
+    # if a != b, and a or b are single chars, then they can't possibly match
     if len(a) == 1 or len(b) == 1:
         return 0.0
 
-    """ use python list comprehension, preferred over list.append() """
+    # use python list comprehension, preferred over list.append()
     a_bigram_list = [a[i:i + 2] for i in range(len(a) - 1)]
     b_bigram_list = [b[i:i + 2] for i in range(len(b) - 1)]
 

@@ -1,8 +1,6 @@
 """ Test for working library_hours.py """
-
 import unittest
-import academic
-from academic.library_hours import find_open, libraries_msg
+from academic.library_hours import find_open
 
 
 class test_library_hours(unittest.TestCase):

@@ -1,22 +1,19 @@
+# system libraries
+import os
+
+# database related libraries
+import urllib.parse
+import uuid
+import psycopg2
+
 # flask libraries
-from flask import Flask, request, redirect, render_template, abort, Response, flash, send_file
-from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
-from flask import session as sess
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Flask, request
 
 # NLP/context libraries
 from api.ai import Agent
 
 # Bot libraries
-from fbmq import Attachment, Template, QuickReply, NotificationType, fbmq
-
-# system libraries
-import os
-
-# database related libraries
-import psycopg2
-import urllib.parse
-import uuid
+from fbmq import Template, fbmq
 
 # wellness libaries
 from packages.wellness.health import health_resources, health_concern_msg
@@ -24,7 +21,9 @@ from packages.wellness.health import health_resources, health_concern_msg
 # dining
 from packages.dining.open_hall_finder import dininghallisOpen_msg
 # from dining.menu_scraper import dining_hall_menu_msg
-from packages.dining.dining import dining_events_msg, dining_hall_food_request_msg, dining_hall_menu_msg
+from packages.dining.dining import dining_events_msg
+from packages.dining.dining import dining_hall_food_request_msg
+from packages.dining.dining import dining_hall_menu_msg
 
 # academic
 from packages.academic.library_hours import libraries_msg
@@ -37,7 +36,7 @@ from packages.housing.laundry import open_machines_msg
 
 # offcampus
 from packages.offcampus.broadway import broadway_rush_msg
-from packages.offcampus.food_recommendations import offcampus_dining_request_msg, get_yelp_info
+from packages.offcampus.food_recommendations import offcampus_dining_request_msg
 from packages.offcampus.mta import mta_subway_info_msg
 from packages.offcampus.food_hours import offcampus_dining_hours_msg
 
@@ -51,7 +50,9 @@ from packages.etc.wisdomsearch import wisdom_search
 from packages.etc.weather import weather_msg
 
 # internal libraries
-from packages.internal.postbacks import intro_reply, health_reply, bot_menu, subscriptions_reply, current_features_msg
+from packages.internal.postbacks import intro_reply, health_reply
+from packages.internal.postbacks import subscriptions_reply
+from packages.internal.postbacks import current_features_msg
 
 # density
 from packages.density.density import density_msg
@@ -101,7 +102,8 @@ Msg_Fn_Dict = {
 
 
 def chunkify(msg):
-    """ Break message into chunks that are below Facebook's max character limit"""
+    """ Break message into chunks that are below
+        Facebook's max character limit """
     try:
         maxline = MAX_MESSAGE_LENGTH
         lines = msg.split("\n")
@@ -120,8 +122,9 @@ def chunkify(msg):
 
 
 def get_generic_or_msg(intent, result):
-    """ The master method.  This method takes in the intent and the result dict structure
-    and calls the proper interface method."""
+    """ The master method.  This method takes in the
+    intent and the result dict structure
+    and calls the proper interface method. """
     # print("in get_generic_or_msg")
     return Msg_Fn_Dict[intent](result)
 ###############################################
@@ -149,8 +152,7 @@ def validate():
             '') == os.environ['VERIFY_TOKEN']:
         print("Validating webhook")
         return request.args.get('hub.challenge', '')
-    else:
-        return "Failed validation. Make sure the validation tokens match."
+    return "Failed validation. Make sure the validation tokens match."
 
 
 def show_persistent_menu():
@@ -186,7 +188,11 @@ def click_persistent_menu(payload, event):
         print(
             page.send(
                 recipient_id,
-                """Welcome to Subscriptions, a new feature that allows you to get direct updates from campus clubs. To check which topics you're subscribed to, just ask 'What topics am I currently subscribed to?'"""))
+                ("""Welcome to Subscriptions, a new feature "
+                    "that allows you to get direct updates from "
+                    "campus clubs. To check which topics you're "
+                    "subscribed to, just ask 'What topics am I "
+                    "currently subscribed to?'""")))
         print(
             page.send(
                 recipient_id,
@@ -256,7 +262,8 @@ def received_postback(event):
         print(
             page.send(
                 recipient_id,
-                "Hi, %s. Welcome to LionBot! Here's some of the things I can do." %
+                ("Hi, %s. Welcome to LionBot! Here's "
+                 "some of the things I can do.") %
                 (first_name)))
         print(page.send(recipient_id, intro_reply))
 
@@ -320,7 +327,8 @@ def message_handler(event):
             print(
                 page.send(
                     recipient_id,
-                    "Here's a handpicked meme by Rafael Ortiz of Columbia buy/sell memes fame."))
+                    ("Here's a handpicked meme by Rafael Ortiz "
+                     "of Columbia buy/sell memes fame.")))
             meme = get_meme_msg(result)
             print(page.send(recipient_id, meme))
         return "Done handling attachments"
@@ -346,7 +354,7 @@ def message_handler(event):
 
     elif "smalltalk" in result['action']:
         speech = result['fulfillment']['speech']
-        if len(speech) == 0:
+        if not speech:
             msg = "Interesting... I don't really know how to respond to that."
             print(page.send(recipient_id, msg))
         else:

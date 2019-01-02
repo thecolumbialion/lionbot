@@ -15,6 +15,7 @@ def get_shows():
     soup = BeautifulSoup(request.content, "html.parser")
     # shows = soup.findAll("ul", class_="list-group")
     shows = soup.findAll(class_="color-white bold")
+    return shows
 
 
 def get_shows_message():

@@ -1,9 +1,6 @@
 # taken and modified from https://github.com/craigcurtin/mta
-
 import urllib.request
 from lxml import etree
-import os
-import datetime
 
 
 class MTA(object):
@@ -133,7 +130,8 @@ def subwaystatus():
     response = "Here is the current subway info for NYC Transit:\n"
     for name in sorted(subwayDictionary.keys()):
         line = '%s is experiencing: %s' % (
-            subwayDictionary[name].getName(), subwayDictionary[name].getStatus())
+            subwayDictionary[name].getName(),
+            subwayDictionary[name].getStatus())
         mta_web_link = "(http://www.mta.info/status/subway/" + \
             subwayDictionary[name].getName() + ")"
         response += line + " " + mta_web_link + "\n"
@@ -146,5 +144,7 @@ def mta_subway_info_msg(result):
     try:
         msg = subwaystatus()
     except BaseException:
-        msg = "Looks like all MTA lines are reporting good service. Check http://www.mta.info/status/subway/123 for updates regarding the 1 train."
+        msg = ("Looks like all MTA lines are reporting good service. "
+               "Check http://www.mta.info/status/subway/123 for updates"
+               " regarding the 1 train.")
     return msg

@@ -1,8 +1,6 @@
 import os
-import sys
-from fbmq import Template, QuickReply, ButtonPostBack
 import requests
-import json
+from fbmq import Template
 
 
 def offcampus_dining_request_msg(
