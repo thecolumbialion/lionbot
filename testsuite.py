@@ -26,7 +26,8 @@ class diningTest(ut.TestCase):
         if currently there's no dining events on
         the dining website, result is an empty list
         """
-        # ut.TestCase.assertNotEqual(self, getDiningEvents(), [], msg="there are no dining events the result is an empty list")
+        # ut.TestCase.assertNotEqual(self, getDiningEvents(),
+        # [], msg="there are no dining events the result is an empty list")
         ut.TestCase.assertEqual(
             self,
             getDiningEvents(),
@@ -43,8 +44,11 @@ class clubTest(ut.TestCase):
         returned as results
         """
 
-        ut.TestCase.assertEqual(self, len(find_clubs(
-            "ADI")), 2, msg="There should be two results when the input is 'ADI' ")
+        ut.TestCase.assertEqual(self,
+                                len(find_clubs("ADI")),
+                                2,
+                                msg=("There should be two results"
+                                     " when the input is 'ADI' "))
 
 
 def suite():
