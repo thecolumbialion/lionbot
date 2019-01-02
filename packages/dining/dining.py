@@ -12,7 +12,8 @@ def dining_events_msg(result):
     except BaseException:
         events = []
     if events == []:
-        msg = "Looks like there's no upcoming Dining Events. Check back later."
+        msg = ("Looks like there's no upcoming Dining Events. "
+               "Check back later.")
     else:
         for i in range(len(events)):
             msg += events[i]
@@ -24,15 +25,14 @@ def dining_hall_food_request_msg(result):
     try:
         food = result['parameters']['dining_hall_food'][0]
     except BaseException:
-        error = "Could you ask that again? I don't know what food to check for"
+        error = ("Could you ask that again? I don't know "
+                 "what food to check for")
         print("error sent")
         return error
     # halls = result['parameters']['dining_halls']
     try:
         halls = result['parameters']['dining_halls']
-        if len(halls) < 1:
-            halls = []
-        elif halls == []:
+        if not halls:
             halls = []
         else:
             halls = halls
@@ -48,7 +48,8 @@ def dining_hall_food_request_msg(result):
             response = response[:len(response) - 1]
             return response
     else:
-        msg1 = "Looks like %s is not available in the dining halls you asked me to check." % food
+        msg1 = ("Looks like %s is not available in the "
+                "dining halls you asked me to check.") % food
         return msg1
 
 
@@ -87,7 +88,7 @@ def food_request(foodname, halls="all"):
     relevant_hall_dict = {}
     if halls == "all":
         check_all_dining_halls(requested_food, menus, relevant_hall_dict)
-    elif len(halls) == 0:
+    elif not halls:
         check_all_dining_halls(requested_food, menus, relevant_hall_dict)
 
     else:
@@ -134,27 +135,22 @@ def get_soup(url):
     return soup
 
 
-""" Builds the URL for the menu of a specific dining hall
-"""
-
-
 def get_hall_url(hall_id):
+    """ Builds the URL for the menu of a specific dining hall """
     url = 'http://dining.columbia.edu/?quicktabs_homepage_menus_quicktabs='
     url = url + str(hall_id)
     url = url + '#quicktabs-homepage_menus_quicktabs'
     return url
 
 
-""" Returns a dictionary where the keys are the names of each dining hall with
+def get_menus():
+    """ Returns a dictionary where the keys are the names of each dining hall with
     menu on dining.columbia.edu and the value for each key is a list of the
     menu items for that dining hall.
 
     Some logic borrowed from:
     https://github.com/samlouiscohen/starting/blob/master/sortedFood_crawler.py
-"""
-
-
-def get_menus():
+    """
     menus = {}
 
     for hall_id in range(3):
@@ -175,11 +171,8 @@ def get_menus():
     return menus
 
 
-""" This prints out the menus of each dining hall to the terminal
-"""
-
-
 def print_menus(menus):
+    """ This prints out the menus of each dining hall to the terminal """
     for hall in menus:
         print("\n\nDINING HALL: " + hall)
         menu = menus[hall]
@@ -188,17 +181,16 @@ def print_menus(menus):
             print("\n" + food)
 
 
-"""
-gets the barnard food
-PS: the food is not seperated in a list, it is just a string
-get food not available for barnard
-"""
-
-
 def get_barnard(arg):
+    """
+    gets the barnard food
+    PS: the food is not seperated in a list, it is just a string
+    get food not available for barnard
+    """
     r = requests.get('https://barnard.edu/dining/menu/' + arg)
     soup = BeautifulSoup(r.text, "lxml")
-    # r = urllib.request.urlopen('https://barnard.edu/dining/menu/' + arg).read()
+    # r = urllib.request.urlopen(
+    # 'https://barnard.edu/dining/menu/' + arg).read()
     # soup = BeautifulSoup(r, "html.parser")
 
     # get three collections of tag objects for events, dates, locations
@@ -209,7 +201,7 @@ def get_barnard(arg):
     food = ''
     liist = []
 
-    if len(menu) > 0:
+    if menu:
         if arg == "Hewitt":
             if now.strftime("%A") == "Sunday" or len(
                     menu) < 3 or now.hour < 12:
@@ -241,16 +233,18 @@ def dining_hall_menu_msg(result):
     """
     menus = get_menus()
     halls = result['parameters']['dining_halls']
-    if len(halls) < 1:
-        mistake = "Can you ask me that again? I don't know which dining hall to check."
+    if not halls:
+        mistake = ("Can you ask me that again? I don't "
+                   "know which dining hall to check.")
         return mistake
     for hall in halls:
         if hall == "dining hall":
-            mistake = "Can you ask me that again? I don't know which dining hall to check."
+            mistake = ("Can you ask me that again? I don't"
+                       " know which dining hall to check.")
             return mistake
         try:
             menu = menus[hall]
-            if len(menu) < 1:
+            if not menu:
                 closed = "Looks like %s is closed right now." % hall
                 return closed
             else:

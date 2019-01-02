@@ -25,12 +25,14 @@ def currentweather(result):
         current_temp = temperature['temp']
         max_temp = temperature['temp_max']
         min_temp = temperature['temp_min']
-        response = "It is currently %s°F (high of %s°F and low of %s°F) in %s. The current weather is %s." % (
+        response = ("It is currently %s°F (high of %s°F and low of %s°F)"
+                    " in %s. The current weather is %s.") % (
             current_temp, max_temp, min_temp, location, weather_detail)
         return response
     except BaseException:
-        response = "Looks like I couldn't get the weather in %s right now. Try again?" % (
-            location)
+        response = ("Looks like I couldn't get the weather "
+                    "in %s right now. Try again?") % (
+                    location)
         return response
 
     return 0
