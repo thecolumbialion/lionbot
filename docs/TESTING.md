@@ -25,8 +25,11 @@
   You want to have your new Dialogflow agent become a copy of Lionbot. So, you'll want to use the **Restore From Zip** option make your newly created agent a copy of LionBot.
   ![Restore LionBot](./imgs/RestoreLionbot.jpg?raw=true)
 
-  3. Now we want to connect our webhook to the agent so that we can test any changes we make to the webhook. Remember from the [Contributing](https://github.com/thecolumbialion/lionbot/blob/master/CONTRIBUTING.md) page how we deploy the webhook locally.
-  In one bash instance,_with our virtual environment activated_, run `$ python testapp.py`, then in another bash instance run `$ ngrok http 5000`. In the ngrok window, the localhost instance will be forwarded to an actual url (e.g. `http://das87968.ngrok.io`) that you can copy and paste.
+  3. We need to update some of the environment variables that we set before running the test app. We need to replace the existing `CLIENT_ACCESS_TOKEN`and `DEVELOPER_ACCESS_TOKEN` with the ones that you find in your settings page. You also probably want to set the version to v1.
+  ![Change Tokens](./imgs/ChangeTokens.jpg?raw=true)
+
+  4. Now we want to connect our webhook to the agent so that we can test any changes we make to the webhook. Remember from the [Contributing](https://github.com/thecolumbialion/lionbot/blob/master/CONTRIBUTING.md) page how we deploy the webhook locally.
+  In one bash instance, _with our virtual environment activated_, run `$ python testapp.py`, then in another bash instance run `$ ngrok http 5000`. In the ngrok window, the localhost instance will be forwarded to an actual url (e.g. `http://das87968.ngrok.io`) that you can copy and paste.
 
   Now, you should use this, to deploy a webhook for your test agent. Go to the fulfillment's page, enable webhook, and copy the url you got from ngrok with `/webhook` appended to the end. And remember to scroll down and click **SAVE**.
   ![Enable Webook](./imgs/EnableWebhook.png?raw=true)
