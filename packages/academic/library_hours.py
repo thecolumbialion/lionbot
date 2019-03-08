@@ -78,7 +78,3 @@ def libraries_msg(result):
                     msg = specific_lib_name + "'s hours for today are " + library.split('| \n', 1)[1].strip().replace('- ','to')
                     return msg
                     #print(msg)
-
-
-if __name__ == '__main__':
-    #print(libraries_msg(request_example))
