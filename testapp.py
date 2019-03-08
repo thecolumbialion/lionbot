@@ -11,9 +11,6 @@ import psycopg2
 # flask libraries
 from flask import Flask, request, make_response, jsonify
 
-# NLP/context libraries
-from api.ai import Agent
-
 # Bot libraries
 from fbmq import Template, fbmq
 
@@ -64,17 +61,7 @@ app = Flask(__name__)
 app.config.update(
     SECRET_KEY=os.environ['SECRET_KEY']
 )
-
-agent = Agent(
-    'thecolumbialion',
-    os.environ['CLIENT_ACCESS_TOKEN'],
-    os.environ['DEVELOPER_ACCESS_TOKEN'],
-)
-
-page = fbmq.Page(os.environ['ACCESS_TOKEN'], api_ver="v2.11")
-page.greeting(
-    "Welcome to LionBot! Click below to learn more about what I can do.")
-page.show_starting_button("GET_STARTED")
+app.config["DEBUG"] = True
 
 # Dictionary of all module interface functions.
 Msg_Fn_Dict = {
@@ -125,8 +112,8 @@ def add_string_response(msg, response):
     response message.
     """
     for chunk in chunkify(msg):
-        message = { "type": 0, "speech": chunk }
-        response['messages'].append(message)
+        message = { "text": { "text": [ chunk ] } }
+        response['fulfillmentMessages'].append(message)
 
 def add_template_list_response(tlist, response):
     """
@@ -144,50 +131,41 @@ def add_generic_element(element, response):
     data structure properly so that we can emulate how Facebook 
     would send a response back to a user.
     """
-    message = { "type": 1,
-                "title": element.title,
-                "subtitle": element.subtitle,
-                "imageUrl": element.image_url,
-                "itemUrl": element.item_url
+    message = { "platform": "ACTIONS_ON_GOOGLE",
+                "card" : {
+                    "title": element.title,
+                    "subtitle": element.subtitle,
+                    "imageUri": element.image_url,
+                    "buttons": format_buttons(element.buttons) 
+                }
             }
-    response['messages'].append(message)
-    if element.buttons:
-        add_buttons(element.buttons, response)
 
-def add_buttons(buttons, response):
+    print(element)
+    response['fulfillmentMessages'].append(message)
+
+def format_buttons(buttons):
     """
     In the typical Facebook response message, it sends back pressable 
     buttons. We don't really care that much about that for the 
     testing(for now). We just want to be sure that we're sending pictures/text 
-    properly.
+    properly. Returns a list.
     """
-
-    #Remember that lists in python are passed by reference
-    buttons_data = response['data']['facebook']['buttons'] 
+    if not buttons: return []
+    formatted_buttons = []
     for button in buttons:
-        if button.type == 'web_url': 
-            # In case there is just a url
-            button_object = { "type": button.type,
-                              "title": button.title,
-                              "url": button.url
-                            }
-        else: 
-            # In case we have a phoneNumber or PostBack
-            button_object = { "type": button.type,
-                              "title": button.title,
-                              "payload": button.payload
-                            }
-        buttons_data.append(button_object)
+        postback = button.url if button.type == 'web_url' else button.payload
+        button_object = { 
+                            "text": button.title,
+                            "type": button.type,
+                            "postback": postback 
+                        }
+        formatted_buttons.append(button_object)
+    return formatted_buttons
 
 def init_dialogflow_response():
     """ Typical dialogflow response template for v1 """
-    resp = { "displayText": "",
-             "messages" : [],
-             "data": { 
-                 "facebook": { 
-                        "buttons": []
-                 } 
-             }
+    resp = { "fulfillmentText": "",
+             "fulfillmentMessages" : []
            }
     return resp
     
@@ -223,9 +201,7 @@ def message_handler():
     req = request.get_json(force=True)      # Get the post request, get it in json format
     res = ''                                # Response to the post query
     intentName = ''                         # intent Name
-    defaultResponse = ''                    # The default response that we will send back
     result = None                           # Dialogflow's default response to the request
-    metadata = None                         # POST metadata 
     response = init_dialogflow_response()   # POST request response (what we will send back to query)
 
 
@@ -233,12 +209,12 @@ def message_handler():
     # We don't Necessarily need to use get(), but an Attribute Error
     # is more intuitive than a KeyError since we're working 
     # with dict() objects derived from JSON
+    text = {}
     try:
-        result = req.get('result')
-        metadata = result.get('metadata')
-        intentName = metadata.get('intentName') 
-        defaultResponse = result.get('fulfillment').get('speech')
-    except AttributeError:
+        result = req.get('queryResult')
+        intentInfo = result.get('intent')
+        intentName = intentInfo.get('displayName')
+    except AttributeError as e :
         return 'json error'
 
     #Check the intent name
@@ -255,10 +231,12 @@ def message_handler():
             print("What the hell HAPPENED!")
             print("Type of the returned response %s" % (type(webhook_resp)))
     else:
-        message = { "type": 0, 
-                    "speech": "Interesting... I don't really know how to respond to that."
+        message = { "text": { "text": [
+            "Interesting... I don't really know how to respond to that." ]
+                    },
+                    "platform": "ACTIONS_ON_GOOGLE"
                   }
-        response['messages'].append(message)
+        response['fulfillmentMessages'].append(message)
 
     #Return the value of the response 
     return make_response(jsonify(response))
