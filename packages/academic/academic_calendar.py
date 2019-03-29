@@ -161,10 +161,10 @@ def calendar_msg(result):
     """
     Interface Function
     """
-    calschool = result['parameters']['school']
-    calyear = result['parameters']["year"]
-    calterm = result['parameters']['term']
-    calevent = result['parameters']['cal_event']
+    calschool = result.parameters['school']
+    calyear = result.parameters["year"]
+    calterm = result.parameters['term']
+    calevent = result.parameters['cal_event']
     try:
         msg = cal_message(calevent, calschool, calterm, calyear)
     except BaseException:

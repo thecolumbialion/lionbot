@@ -13,7 +13,7 @@ def weather_msg(result):
 def currentweather(result):
     owm = pyowm.OWM(os.environ['WEATHER_API_KEY'])
     try:
-        location = result['parameters']['address']['city']
+        location = result.parameters['address']['city']
     except BaseException:
         location = "New York, NY"
 

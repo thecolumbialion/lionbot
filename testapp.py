@@ -215,6 +215,7 @@ def message_handler():
         intentInfo = result.get('intent')
         intentName = intentInfo.get('displayName')
     except AttributeError as e :
+        print(json.dumps(req, indent=4, sort_keys=True))
         return 'json error'
 
     #Check the intent name

@@ -110,4 +110,10 @@ lib/
 # mkdocs documentation
 /site
 
+# Key file for service account
+key.json
+
+# File that has usefule environment variables
+lionbot_env_variables.txt
+
 # End of https://www.gitignore.io/api/python

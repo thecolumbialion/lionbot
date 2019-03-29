@@ -5,7 +5,7 @@ import requests
 def offcampus_dining_hours_msg(result):
     '''Interface Function'''
     try:
-        term = result['parameters']['off_campus_restaurant']
+        term = result.parameters['off_campus_restaurant']
 
     except BaseException:
         return 'Sorry, couldn\'t find that restaurant. Try another?'

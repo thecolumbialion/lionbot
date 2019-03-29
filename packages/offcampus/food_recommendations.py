@@ -14,7 +14,7 @@ def offcampus_dining_request_msg(
         longitude=-73.961733):
     """Interface function"""
     try:
-        term = result['parameters']['off_campus_food']
+        term = result.parameters['off_campus_food']
     except BaseException:
         term = "boba"
     food_recs = get_recommendation_type(term, latitude, longitude)

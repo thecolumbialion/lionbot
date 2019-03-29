@@ -20,7 +20,7 @@ types_of_places = {
 
 def density_msg(result):
     try:
-        location = result['parameters']['density_entities']
+        location = result.parameters['density_entities']
     except BaseException:
         location = 'NoCo'
 

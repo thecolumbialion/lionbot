@@ -9,7 +9,7 @@ def news_msg(result):
     campus_publication = ""
     news_result = []
     try:
-        campus_publication = result['parameters']['club']
+        campus_publication = result.parameters['club']
         campus_publication = campus_publication.lower()
     except BaseException:
         campus_publication = ""
