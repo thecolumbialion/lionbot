@@ -3,6 +3,9 @@
 import sys
 import datetime
 import requests
+import ast
+import html
+import json
 from bs4 import BeautifulSoup
 
 
@@ -53,6 +56,73 @@ def printhalls(halls):
 
 
 def isOpen(args):
+
+    #what the website returns on the 'network' section for each dining hall
+    time_nodes = {
+        "JJ's Place" : 66,
+        "John Jay Dining Hall" : 67,
+        "Ferris Booth" : 64,
+        "Uris Deli" : 69,
+        "Blue Java" : 58,
+        "Cafe East" : 62
+    }
+
+    weekdays = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+
+    #the specific entity
+    dining_hall = args[0]
+
+    if dining_hall in time_nodes.keys():
+
+        url = "https://dining.columbia.edu/ajax/location-node/load/" + str(time_nodes[dining_hall])
+
+        #parsing through weird html format, columbia website made it a pain in the ass
+        r = requests.get(url).text
+        r = ast.literal_eval(r)
+        html.unescape(r)
+        r = r['location']
+        soup = BeautifulSoup(r, 'html.parser')
+        time_info = soup.find('div', attrs = {'class':'views-field-field-location-hoursdisplay-value'}).text.split('\n')
+        while '' in time_info:
+            time_info.remove('')
+
+
+        #creating a dict for times (values) by weekdays (keys)
+        timesbydays = {}
+
+        for item in time_info:
+            if '-' in item:
+                start = item[:item.find('-')].strip()
+                end = item[item.find('-')+1:item.find(':')].strip()
+
+                i = weekdays.index(start)
+
+                while weekdays[i] != end:
+                    if i == len(weekdays) - 1:
+                        i = 0
+                    timesbydays[weekdays[i]] = item[item.find(':')+1:]
+                    i = i + 1
+
+                timesbydays[weekdays[i]] = item[item.find(':')+1:]
+
+            #if it's a singular day span
+            else:
+
+                weekday = item[:item.find(':')].strip()
+                timesbydays[weekday] = item[item.find(':')+1:]
+
+
+        #only displays hours for that specific day and dining hall
+
+        current_weekday = datetime.datetime.today().strftime('%A')
+
+        if current_weekday in timesbydays:
+            current_hours = timesbydays[current_weekday]
+            response = dining_hall + " is open today from " + current_hours
+            return response
+
+
+
     if len(args) < 2:
         halls = find_open()
         if halls is None:
