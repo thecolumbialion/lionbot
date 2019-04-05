@@ -74,6 +74,7 @@ def isOpen(args):
 
     if dining_hall in time_nodes.keys():
 
+        #columbia dining url
         url = "https://dining.columbia.edu/ajax/location-node/load/" + str(time_nodes[dining_hall])
 
         #parsing through weird html format, columbia website made it a pain in the ass
@@ -81,6 +82,8 @@ def isOpen(args):
         r = ast.literal_eval(r)
         html.unescape(r)
         r = r['location']
+
+        #gets the hours on the specific dining hall
         soup = BeautifulSoup(r, 'html.parser')
         time_info = soup.find('div', attrs = {'class':'views-field-field-location-hoursdisplay-value'}).text.split('\n')
         while '' in time_info:
@@ -91,12 +94,15 @@ def isOpen(args):
         timesbydays = {}
 
         for item in time_info:
+
+            #the dash indicates that this is for a set of days
             if '-' in item:
                 start = item[:item.find('-')].strip()
                 end = item[item.find('-')+1:item.find(':')].strip()
 
                 i = weekdays.index(start)
 
+                #continously adds to a dictionary the times the dining hall is open to each day of the weel
                 while weekdays[i] != end:
                     if i == len(weekdays) - 1:
                         i = 0
@@ -116,13 +122,16 @@ def isOpen(args):
 
         current_weekday = datetime.datetime.today().strftime('%A')
 
+        #only displays if the dining hall is open on the day the user asks
         if current_weekday in timesbydays:
             current_hours = timesbydays[current_weekday]
             response = dining_hall + " is open today from " + current_hours
             return response
 
 
-
+    #displays info on all the dining halls, if the user wants general dining hall info
+    #or if the dining hall requested is not open
+    
     if len(args) < 2:
         halls = find_open()
         if halls is None:
