@@ -2,7 +2,12 @@ import os
 import requests
 from fbmq import Template
 
-
+"""
+Returns a Template.List which is essentially just a wrapper for a 
+python list of Template.Elements.
+The list is the 'elements' field of the payload paramter (which is a
+dictionary)
+"""
 def offcampus_dining_request_msg(
         result,
         latitude=40.806209,
@@ -24,7 +29,7 @@ def get_recommendation_type(term, latitude=40.806209, longitude=-73.961733):
 
 # set default coordinates to campus in case we do not get a user location
 
-
+# Returns a list of Tempate.GenericElement objects 
 def get_yelp_info(term="", latitude=40.806209, longitude=-73.961733):
     recommendations_list = []
     business_link_base = "https://www.yelp.com/biz/"
@@ -67,6 +72,7 @@ def get_yelp_info(term="", latitude=40.806209, longitude=-73.961733):
     return recommendations_list
 
 
+# Returns a JSON response
 def query_yelp(term, latitude, longitude, query_limit):
     headers = {'Authorization': 'Bearer ' + os.environ['YELP_API_KEY']}
     params = {

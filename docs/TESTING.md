@@ -25,8 +25,7 @@
   You want to have your new Dialogflow agent become a copy of Lionbot. So, you'll want to use the **Restore From Zip** option make your newly created agent a copy of LionBot.
   ![Restore LionBot](./imgs/RestoreLionbot.jpg?raw=true)
 
-  3. We need to update some of the environment variables that we set before running the test app. We need to replace the existing `CLIENT_ACCESS_TOKEN`and `DEVELOPER_ACCESS_TOKEN` with the ones that you find in your settings page. You also probably want to set the version to v1.
-  ![Change Tokens](./imgs/ChangeTokens.jpg?raw=true)
+  3. Make sure that we now have our agent in v2, v1 is deprecated. So we can't use it anymore.
 
   4. Now we want to connect our webhook to the agent so that we can test any changes we make to the webhook. Remember from the [Contributing](https://github.com/thecolumbialion/lionbot/blob/master/CONTRIBUTING.md) page how we deploy the webhook locally.
   In one bash instance, _with our virtual environment activated_, run `$ python testapp.py`, then in another bash instance run `$ ngrok http 5000`. In the ngrok window, the localhost instance will be forwarded to an actual url (e.g. `http://das87968.ngrok.io`) that you can copy and paste.
@@ -35,4 +34,9 @@
   ![Enable Webook](./imgs/EnableWebhook.png?raw=true)
 
   Now, you should be good to go, you can enter your test queries in the test window.
+
+  _Note_: Since we have set the debug flag in the flask config, you don't need to reset the webhook if you need to fix a bug. Just change it and save the file, the webhook should automagically update.
   ![Test the Bot](./imgs/TestNOW.jpg?raw=true)
+
+  If you don't see the responses you were expecting, remember to switch from `Default response` to `Actions on Google` _after_ when you try a test query.
+  ![Actions](./imgs/ActionsOnGoogle.jpg?raw=true)
