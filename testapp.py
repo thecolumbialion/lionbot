@@ -28,6 +28,7 @@ from packages.dining.dining import dining_hall_menu_msg
 from packages.academic.library_hours import libraries_msg
 from packages.academic.academic_calendar import calendar_msg
 from packages.academic.printers import printers_msg
+from packages.academic.campus_events import campus_events_msg
 
 # housing
 from packages.housing.cutv_channels import tv_network_msg
@@ -85,7 +86,8 @@ Msg_Fn_Dict = {
     'web.search': wisdom_search,
     'meme': get_meme_msg,
     'laundry': open_machines_msg,
-    'density': density_msg
+    'density': density_msg,
+    'campus_events': campus_events_msg
     }
 
 #################
@@ -107,8 +109,8 @@ def get_generic_or_msg(intent, result):
 def add_string_response(msg, response):
     """
     If the response from the package functions is a string,
-    then we want to parse it to make sure that it doesn't 
-    exceed the character limit, and then add that to the 
+    then we want to parse it to make sure that it doesn't
+    exceed the character limit, and then add that to the
     response message.
     """
     for chunk in chunkify(msg):
@@ -118,7 +120,7 @@ def add_string_response(msg, response):
 def add_template_list_response(tlist, response):
     """
     If the response from the package function is a Template.List,
-    then we want to parse the container and then add its 
+    then we want to parse the container and then add its
     information to the response message.
     """
     for element in tlist.payload['elements']:
@@ -126,9 +128,9 @@ def add_template_list_response(tlist, response):
 
 def add_generic_element(element, response):
     """
-    A Template.GenericElement is the type that is contained in a 
+    A Template.GenericElement is the type that is contained in a
     Template.List; we want to make sure that we get the info from this
-    data structure properly so that we can emulate how Facebook 
+    data structure properly so that we can emulate how Facebook
     would send a response back to a user.
     """
     message = { "platform": "ACTIONS_ON_GOOGLE",
@@ -136,7 +138,7 @@ def add_generic_element(element, response):
                     "title": element.title,
                     "subtitle": element.subtitle,
                     "imageUri": element.image_url,
-                    "buttons": format_buttons(element.buttons) 
+                    "buttons": format_buttons(element.buttons)
                 }
             }
 
@@ -145,19 +147,19 @@ def add_generic_element(element, response):
 
 def format_buttons(buttons):
     """
-    In the typical Facebook response message, it sends back pressable 
-    buttons. We don't really care that much about that for the 
-    testing(for now). We just want to be sure that we're sending pictures/text 
+    In the typical Facebook response message, it sends back pressable
+    buttons. We don't really care that much about that for the
+    testing(for now). We just want to be sure that we're sending pictures/text
     properly. Returns a list.
     """
     if not buttons: return []
     formatted_buttons = []
     for button in buttons:
         postback = button.url if button.type == 'web_url' else button.payload
-        button_object = { 
+        button_object = {
                             "text": button.title,
                             "type": button.type,
-                            "postback": postback 
+                            "postback": postback
                         }
         formatted_buttons.append(button_object)
     return formatted_buttons
@@ -168,7 +170,7 @@ def init_dialogflow_response():
              "fulfillmentMessages" : []
            }
     return resp
-    
+
 ###############################################
 
 
@@ -207,7 +209,7 @@ def message_handler():
 
     # Get the intentName from the post request
     # We don't Necessarily need to use get(), but an Attribute Error
-    # is more intuitive than a KeyError since we're working 
+    # is more intuitive than a KeyError since we're working
     # with dict() objects derived from JSON
     text = {}
     try:
@@ -238,7 +240,7 @@ def message_handler():
                   }
         response['fulfillmentMessages'].append(message)
 
-    #Return the value of the response 
+    #Return the value of the response
     return make_response(jsonify(response))
 
 if __name__ == "__main__":
