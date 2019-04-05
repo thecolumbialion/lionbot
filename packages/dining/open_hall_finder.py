@@ -88,7 +88,7 @@ def isOpen(args):
 
 
 def dininghallisOpen_msg(result):
-    halls = result['parameters']['dining_halls']
+    halls = result.parameters['dining_halls']
     msg = isOpen(halls)
     return msg
 

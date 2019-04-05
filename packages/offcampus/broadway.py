@@ -144,8 +144,8 @@ def search_show(show_name, desired_info=['rush_policy']):
 def broadway_rush_msg(result):
     """Interface function"""
     try:
-        show = result['parameters']['broadway_shows']
-        desired_info = result['parameters']['broadway_show_info']
+        show = result.parameters['broadway_shows']
+        desired_info = result.parameters['broadway_show_info']
         msg = search_show(show, desired_info)
     except BaseException:
         msg = "Looks like I couldn't find that show's information. Try again?"

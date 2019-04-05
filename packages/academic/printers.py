@@ -33,10 +33,10 @@ def printers_msg(result):
     buildings = []
     is_color = False
 
-    if 'campus_buildings' in result['parameters']:
-        buildings = result['parameters']['campus_buildings']
+    if 'campus_buildings' in result.parameters:
+        buildings = result.parameters['campus_buildings']
 
-    if len(result['parameters']['color_printer']) > 0:
+    if len(result.parameters['color_printer']) > 0:
         is_color = True
 
     printer_list = []

@@ -114,7 +114,7 @@ def dining_hall_menu_msg(result):
     # max_message_length = 640
     # print("in dining halls")
     menus = get_menus()
-    halls = result['parameters']['dining_halls']
+    halls = result.parameters['dining_halls']
     if len(halls) < 1:
         mistake = "Can you ask me that again? I don't know which dining hall to check."
         return mistake

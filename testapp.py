@@ -168,6 +168,13 @@ def init_dialogflow_response():
              "fulfillmentMessages" : []
            }
     return resp
+
+# Quick hack in order to simulate the class that v2 would return
+class v2_query:
+    def __init__(self, queryResult):
+        self.parameters = queryResult['parameters']
+        self.intent = queryResult['intent']
+
     
 ###############################################
 
@@ -211,10 +218,12 @@ def message_handler():
     # with dict() objects derived from JSON
     text = {}
     try:
-        result = req.get('queryResult')
-        intentInfo = result.get('intent')
+        result = v2_query(req.get('queryResult'))
+        intentInfo = result.intent
         intentName = intentInfo.get('displayName')
     except AttributeError as e :
+        print(json.dumps(req, indent=4, sort_keys=True))
+        print(str(e))
         return 'json error'
 
     #Check the intent name

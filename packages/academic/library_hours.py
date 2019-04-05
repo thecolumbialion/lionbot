@@ -53,7 +53,7 @@ def libraries_msg(result):
     except BaseException:
         open_lib = []
     #accesses the library name you want to specifically select
-    specific_lib_name = result['parameters']['libraries'][0]
+    specific_lib_name = result.parameters['libraries'][0]
 
     #if their input isn't a specific library then it'll display all library info
     if specific_lib_name == 'library' or specific_lib_name == 'None':

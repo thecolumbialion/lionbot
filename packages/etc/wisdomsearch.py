@@ -12,7 +12,7 @@ def make_link(text):
 
 def wisdom_search(result):
     try:
-        question = result['parameters']['q']
+        question = result.parameters['q']
     except BaseException:
         msg = "I'm not sure what that is. Try again?"
     columbiafy_question = question

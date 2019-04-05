@@ -42,6 +42,6 @@ def find_network(network):
 
 
 def tv_network_msg(result):
-    channel = result['parameters']['tv_network']
+    channel = result.parameters['tv_network']
     msg = find_network(channel)
     return msg

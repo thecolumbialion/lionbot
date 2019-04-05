@@ -23,15 +23,15 @@ def dining_events_msg(result):
 def dining_hall_food_request_msg(result):
     """Interface Function for food request intent"""
     try:
-        food = result['parameters']['dining_hall_food'][0]
+        food = result.parameters['dining_hall_food'][0]
     except BaseException:
         error = ("Could you ask that again? I don't know "
                  "what food to check for")
         print("error sent")
         return error
-    # halls = result['parameters']['dining_halls']
+    # halls = result.parameters['dining_halls']
     try:
-        halls = result['parameters']['dining_halls']
+        halls = result.parameters['dining_halls']
         if not halls:
             halls = []
         else:
@@ -232,7 +232,7 @@ def dining_hall_menu_msg(result):
     to click on each dining hall and have the bot collect all the info.
     """
     menus = get_menus()
-    halls = result['parameters']['dining_halls']
+    halls = result.parameters['dining_halls']
     if not halls:
         mistake = ("Can you ask me that again? I don't "
                    "know which dining hall to check.")

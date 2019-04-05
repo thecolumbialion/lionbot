@@ -1,16 +1,21 @@
 # system libraries
 import os
+from string import ascii_lowercase, digits
 
 # database related libraries
 import urllib.parse
 import uuid
 import psycopg2
 
+# Generating strings libraries
+import random
+from string import ascii_lowercase, digits
+
 # flask libraries
 from flask import Flask, request
 
 # NLP/context libraries
-from api.ai import Agent
+import dialogflow_v2 as dialogflow
 
 # Bot libraries
 from fbmq import Template, fbmq
@@ -63,11 +68,8 @@ app.config.update(
     SECRET_KEY=os.environ['SECRET_KEY']
 )
 
-agent = Agent(
-    'thecolumbialion',
-    os.environ['CLIENT_ACCESS_TOKEN'],
-    os.environ['DEVELOPER_ACCESS_TOKEN'],
-)
+# Project id of the dialogflow agent
+PROJECT_ID = os.environ['PROJECT_ID']
 
 page = fbmq.Page(os.environ['ACCESS_TOKEN'], api_ver="v2.11")
 page.greeting(
@@ -99,6 +101,20 @@ Msg_Fn_Dict = {
     'density': density_msg}
 
 #################
+
+def detect_intent_text(project_id, text, session_id=None, language_code='en'):
+    if not session_id: 
+        session_id = ''.join(random.choice(ascii_lowercase + digits) for _ in range(36))
+
+    session_client = dialogflow.SessionsClient()
+    session = session_client.session_path(project_id, session_id)
+
+    text_input = dialogflow.types.TextInput(text=text, language_code=language_code)
+    query_input = dialogflow.types.QueryInput(text=text_input)
+
+    response = session_client.detect_intent(
+            session=session, query_input=query_input)
+    return response
 
 
 def chunkify(msg):
@@ -209,7 +225,7 @@ def click_persistent_menu(payload, event):
     return "done with persistent menu click"
 
 
-# TO-DO: add db query to insert userid to topic's column.
+# TODO: add db query to insert userid to topic's column.
 @page.callback(['Subscriptions/(.+)'])
 def handle_subscriptons(payload, event):
     click_menu = payload.split('/')[1]
@@ -282,7 +298,10 @@ def message_handler(event):
     recipient_id = event.sender_id
     message = event.message
     user_profile = page.get_user_profile(event.sender_id)
-    response = agent.query(message.get("text"))
+
+    response = detect_intent_text(PROJECT_ID, message.get("text"))
+
+    # response = agent.query(message.get("text"))
     page.typing_on(recipient_id)
     result = {'action': ''}
     try:
@@ -290,9 +309,10 @@ def message_handler(event):
         last_name = str(user_profile["last_name"])
         unique_id = uuid.uuid4().hex
         user_id = str(recipient_id)
-        result = response['result']
-        intent = result['metadata'].get('intentName', None)
-        defaultResponse = result['fulfillment']['speech']
+        
+        result = response.query_result
+        intent = result.intent.display_name
+        defaultResponse = result.fulfillment_text # Unsure if this is right
     except BaseException:
         first_name, last_name, intent = ("", "", "")
 
@@ -422,3 +442,8 @@ def callback_clicked_button(payload, event):
 
 if __name__ == "__main__":
     app.run()
+
+
+
+#################
+
