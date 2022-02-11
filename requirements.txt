@@ -35,7 +35,7 @@ mccabe==0.6.1
 openpyxl==2.4.0
 parse==1.9.0
 passlib==1.7.1
-protobuf==3.7.1
+protobuf==3.15.0
 psycopg2==2.7.1
 pyasn1==0.4.5
 pyasn1-modules==0.2.4
